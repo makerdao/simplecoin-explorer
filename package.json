@@ -2,6 +2,7 @@
   "name": "simplecoin-explorer",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://nanexcool.github.io/simplecoin-explorer",
   "devDependencies": {
     "react-scripts": "0.6.1"
   },
