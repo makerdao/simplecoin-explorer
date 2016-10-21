@@ -66,7 +66,7 @@ class App extends Component {
   componentDidMount() {
     this.checkNetwork();
     this.checkAccounts();
-    this.initContracts();
+    //this.initContracts();
 
     const checkAccountsInterval = setInterval(this.checkAccounts, 10000);
     const checkNetworkInterval = setInterval(this.checkNetwork, 3000);
