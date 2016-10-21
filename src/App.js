@@ -13,6 +13,10 @@ class App extends Component {
     ))
     this.web3 = web3;
     this.state = {
+      syncing: null,
+      startingBlock: null,
+      currentBlock: null,
+      highestBlock: null,
       latestBlock: null,
       outOfSync: null,
       isConnected: null,
@@ -20,9 +24,38 @@ class App extends Component {
       accounts: null,
       defaultAccount: null
     }
+
     this.checkNetwork = this.checkNetwork.bind(this);
+    this.initNetwork = this.initNetwork.bind(this);
     this.checkAccounts = this.checkAccounts.bind(this);
     this.initContracts = this.initContracts.bind(this);
+
+    this.web3.eth.isSyncing((error, sync) => {
+      if (!error) {
+        this.setState({
+          syncing: sync !== false
+        });
+
+        // Stop all app activity
+        if (sync === true) {
+          // We use `true`, so it stops all filters, but not the web3.eth.syncing polling
+          this.web3.reset(true);
+          console.log('Is Syncing - ', new Date().getTime() / 1000);
+          this.checkNetwork();
+        // show sync info
+        } else if (sync) {
+          this.setState({
+            startingBlock: sync.startingBlock,
+            currentBlock: sync.currentBlock,
+            highestBlock: sync.highestBlock,
+          });
+        } else {
+          this.setState({
+            outOfSync: false
+          });
+        }
+      }
+    });
   }
 
   initContracts() {
@@ -31,11 +64,12 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.checkNetwork();
     this.checkAccounts();
     this.initContracts();
 
-    const checkAccountsInterval = setInterval(this.checkAccounts, 5000);
-    const checkNetworkInterval = setInterval(this.checkNetwork, 2000);
+    const checkAccountsInterval = setInterval(this.checkAccounts, 10000);
+    const checkNetworkInterval = setInterval(this.checkNetwork, 3000);
     // store checkAccountsInterval in the state so it can be accessed later:
     this.setState({
       checkAccountsInterval, 
@@ -49,6 +83,7 @@ class App extends Component {
   }
 
   checkNetwork() {
+    console.log('Check Network - ', new Date().getTime() / 1000);
     this.web3.version.getNode((error) => {
       const isConnected = !error;
 
@@ -89,7 +124,7 @@ class App extends Component {
               }
             }
             if (this.state.network !== network) {
-              //initNetwork(network);
+              this.initNetwork(network);
             }
           });
         } else {
@@ -100,6 +135,15 @@ class App extends Component {
           });
         }
       }
+    });
+  }
+
+  initNetwork(newNetwork) {
+    //checkAccounts();
+    this.setState({
+      network: newNetwork,
+      isConnected: true,
+      latestBlock: 0,
     });
   }
 
@@ -121,15 +165,10 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p className="App-intro">
-          Account: {this.state.defaultAccount}
-        </p>
-        <p className="App-intro">
-          Latest Block: {this.state.latestBlock}
-        </p>
+        {
+          Object.keys(this.state).map(key => <p key={key}>{key}:
+          &nbsp;{typeof(this.state[key]) === 'boolean' ? (this.state[key] ? 'true' : 'false') : this.state[key]}</p>)
+        }
       </div>
     );
   }
