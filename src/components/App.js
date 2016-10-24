@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
-import simplecoin from '../simplecoin/build/js_module';
-import feedbase from '../node_modules/feedbase/build/js_module';
-import logo from './logo.svg';
+import NoWeb3 from './NoWeb3';
+import simplecoin from '../../simplecoin/build/js_module';
+import feedbase from '../../node_modules/feedbase/build/js_module';
+import logo from '../logo.svg';
 import './App.css';
 
 class App extends Component {
@@ -40,7 +41,6 @@ class App extends Component {
         if (sync === true) {
           // We use `true`, so it stops all filters, but not the web3.eth.syncing polling
           this.web3.reset(true);
-          console.log('Is Syncing - ', new Date().getTime() / 1000);
           this.checkNetwork();
         // show sync info
         } else if (sync) {
@@ -83,7 +83,6 @@ class App extends Component {
   }
 
   checkNetwork() {
-    console.log('Check Network - ', new Date().getTime() / 1000);
     this.web3.version.getNode((error) => {
       const isConnected = !error;
 
@@ -160,16 +159,19 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+      this.state.isConnected ? 
+        <div className="App">
+          <div className="App-header">
+            <img src={logo} className="App-logo" alt="logo" />
+            <h2>Simplecoin Explorer</h2>
+          </div>
+          {
+            Object.keys(this.state).map(key => <p key={key}>{key}:
+            &nbsp;{typeof(this.state[key]) === 'boolean' ? (this.state[key] ? 'true' : 'false') : this.state[key]}</p>)
+          }
         </div>
-        {
-          Object.keys(this.state).map(key => <p key={key}>{key}:
-          &nbsp;{typeof(this.state[key]) === 'boolean' ? (this.state[key] ? 'true' : 'false') : this.state[key]}</p>)
-        }
-      </div>
+      :
+        <NoWeb3 />
     );
   }
 }
