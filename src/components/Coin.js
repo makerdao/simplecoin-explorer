@@ -10,6 +10,7 @@ class Coin extends Component {
     return (
       <div>
         <div>Coin: {this.props.index}</div>
+        <p><a href="#">Back</a></p>
       </div>
     );
   }
