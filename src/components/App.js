@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
-import NoWeb3 from './NoWeb3';
 import Coins from './Coins';
 import Coin from './Coin';
 import simplecoinFactory from '../../simplecoin/build/js_module';
@@ -36,6 +35,9 @@ class App extends Component {
     this.checkAccounts = this.checkAccounts.bind(this);
     this.initContracts = this.initContracts.bind(this);
     this.getCoin = this.getCoin.bind(this);
+    this.renderNoWeb3 = this.renderNoWeb3.bind(this);
+    this.renderContent = this.renderContent.bind(this);
+    this.renderNetworkVariables = this.renderNetworkVariables.bind(this);
 
     this.web3.eth.isSyncing((error, sync) => {
       if (!error) {
@@ -70,6 +72,12 @@ class App extends Component {
         if (!error) {
           const coin = {
             coinId: result,
+            owner: null,
+            rules: null,
+            feed: null,
+            spread: null,
+            totalSupply: null,
+            collateralTypes: []   
           };
           resolve(coin);
         } else {
@@ -201,24 +209,50 @@ class App extends Component {
     }
   }
 
+  renderNoWeb3() {
+    return (
+      <div>
+        No Web3
+      </div>
+    );
+  }
+
+  renderNetworkVariables() {
+    return (
+      <div>
+        {
+          Object.keys(this.state.network).map(key => <p key={key}>{key}:
+          &nbsp;{typeof(this.state.network[key]) === 'boolean' ? (this.state.network[key] ? 'true' : 'false') : this.state.network[key]}</p>)
+        }
+      </div>
+    );
+  }
+
+  renderContent() {
+    return (
+      <div>
+        {this.renderNetworkVariables()}
+        {
+        (this.parseUrl() !== null)
+              ? <Coin coins={this.state.coins} index={this.parseUrl()} simplecoinFactory={simplecoinFactory}/>
+              : <Coins coins={this.state.coins}/>
+        }
+      </div>
+    )
+  }
+
   render() {
     return (
-      this.state.network.isConnected ? 
-        <div className="App">
-          <div className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h2>Simplecoin Explorer</h2>
-          </div>
-          {
-            Object.keys(this.state.network).map(key => <p key={key}>{key}:
-            &nbsp;{typeof(this.state.network[key]) === 'boolean' ? (this.state.network[key] ? 'true' : 'false') : this.state.network[key]}</p>)
-          }
-          {
-            (this.parseUrl() !== null) ? <Coin coins={this.state.coins} index={this.parseUrl()} simplecoinFactory={simplecoinFactory}/> : <Coins coins={this.state.coins}/>
-          }
+      <div className="App">
+        <div className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <h2>Simplecoin Explorer</h2>
         </div>
-      :
-        <NoWeb3 />
+        {
+          this.state.network.isConnected ? this.renderContent() : this.renderNoWeb3() 
+        }
+        {}
+      </div>     
     );
   }
 }
