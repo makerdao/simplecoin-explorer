@@ -2,38 +2,37 @@ import React, { Component } from 'react';
 
 class Coin extends Component {
   constructor(props) {
-    super(props);
+    super();
     const simplecoin = props.simplecoinFactory.classes.Simplecoin.at(props.index);
+    
+    //Testing purpose
     window.simplecoin = simplecoin;
-    console.log(simplecoin);
+    //
 
-    simplecoin.owner((e,r) => {
-      /*this.setState({
-        network: networkState
-      });*/
+    const me = this;
+    simplecoin.owner((error, result) => {
+      me.props.updateCoin(me.props.index, 'owner', result);
+    });
+    simplecoin.rules((error, result) => {
+      me.props.updateCoin(me.props.index, 'rules', result);
+    });
+    simplecoin.feed((error, result) => {
+      me.props.updateCoin(me.props.index, 'feed', result);
+    });
+    simplecoin.spread((error, result) => {
+      me.props.updateCoin(me.props.index, 'spread', result);
+    });
+    simplecoin.totalSupply((error, result) => {
+      me.props.updateCoin(me.props.index, 'totalSupply', result);
     });
   }
-
-  getCoinDetail(i) {
-    /*const p = new Promise((resolve, reject) => {
-      simplecoinFactory.objects.factory.coins(i, (error, result) => {
-        if (!error) {
-          const coin = {
-            coinId: result,
-          };
-          resolve(coin);
-        } else {
-          reject(error);
-        }
-      });
-    });
-    return p;*/
-  }
-
+  
   render() {
     return (
       <div>
-        <div>Coin: {this.props.index}</div>
+        {
+          Object.keys(this.props.state.coins[this.props.index]).map(key => <p key={key}> {key + ": " + this.props.state.coins[this.props.index][key]} </p>)
+        }
         <p><a href="#">Back</a></p>
       </div>
     );

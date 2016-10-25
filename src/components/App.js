@@ -27,7 +27,7 @@ class App extends Component {
         accounts: null,
         defaultAccount: null
       },
-      coins: [],
+      coins: {},
     };
 
     this.checkNetwork = this.checkNetwork.bind(this);
@@ -35,6 +35,7 @@ class App extends Component {
     this.checkAccounts = this.checkAccounts.bind(this);
     this.initContracts = this.initContracts.bind(this);
     this.getCoin = this.getCoin.bind(this);
+    this.updateCoin = this.updateCoin.bind(this);
     this.renderNoWeb3 = this.renderNoWeb3.bind(this);
     this.renderContent = this.renderContent.bind(this);
     this.renderNetworkVariables = this.renderNetworkVariables.bind(this);
@@ -77,7 +78,7 @@ class App extends Component {
             feed: null,
             spread: null,
             totalSupply: null,
-            collateralTypes: []   
+            collateralTypes: {}   
           };
           resolve(coin);
         } else {
@@ -86,6 +87,12 @@ class App extends Component {
       });
     });
     return p;
+  }
+
+  updateCoin(index, field, value) {
+    const coins = {...this.state.coins};
+    coins[index][field] = value;
+    this.setState({ coins: coins });
   }
 
   initContracts() {
@@ -98,10 +105,14 @@ class App extends Component {
       const promises = [];
       for (let i=0; i<r; i++) {
         promises.push(this.getCoin(i));
-        Promise.all(promises).then((resultProm) => {
-          this.setState({ coins: resultProm });
-        });
       }
+      Promise.all(promises).then((resultProm) => {
+        const coins = {};
+        for (let i=0; i<resultProm.length; i++) {
+          coins[resultProm[i]['coinId']] = resultProm[i];
+        }
+        this.setState({ coins: coins });
+      });
     });
   }
 
@@ -201,7 +212,7 @@ class App extends Component {
 
   parseUrl() {
     const params = window.location.hash.replace(/^#\/?|\/$/g, '').split('/');
-    if(params.length > 0 && params[0] !== ''/* && this.state.coins.indexOf(params[0]) !== -1*/) {
+    if(params.length > 0 && params[0] !== '' && this.state.coins[params[0]]) {
       return params[0];
     }
     else {
@@ -224,6 +235,7 @@ class App extends Component {
           Object.keys(this.state.network).map(key => <p key={key}>{key}:
           &nbsp;{typeof(this.state.network[key]) === 'boolean' ? (this.state.network[key] ? 'true' : 'false') : this.state.network[key]}</p>)
         }
+        <hr />
       </div>
     );
   }
@@ -234,7 +246,7 @@ class App extends Component {
         {this.renderNetworkVariables()}
         {
         (this.parseUrl() !== null)
-              ? <Coin coins={this.state.coins} index={this.parseUrl()} simplecoinFactory={simplecoinFactory}/>
+              ? <Coin state={this.state} index={this.parseUrl()} updateCoin={this.updateCoin} simplecoinFactory={simplecoinFactory}/>
               : <Coins coins={this.state.coins}/>
         }
       </div>
