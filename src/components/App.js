@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
 import NoWeb3 from './NoWeb3';
+import Coins from './Coins';
 import simplecoin from '../../simplecoin/build/js_module';
 import feedbase from '../../node_modules/feedbase/build/js_module';
 import logo from '../logo.svg';
@@ -14,6 +15,8 @@ class App extends Component {
     ))
     this.web3 = web3;
     this.state = {
+      coinsCount: 0,
+      coins: [],
       network: {
         syncing: null,
         startingBlock: null,
@@ -58,6 +61,34 @@ class App extends Component {
         }
       }
     });
+
+    simplecoin.class(this.web3, 'morden');
+    simplecoin.objects.factory.count((e, r) => {
+      this.setState({ coinsCount: r.toNumber() });
+      const promises = [];
+      for (let i=0; i<r; i++) {
+        promises.push(this.getCoin(i));
+        Promise.all(promises).then((resultProm) => {
+          this.setState({ coins: resultProm });
+        });
+      }
+    });
+  }
+
+  getCoin(i) {
+    const p = new Promise((resolve, reject) => {
+      simplecoin.objects.factory.coins(i, (error, result) => {
+        if (!error) {
+          const coin = {
+            coinId: result,
+          };
+          resolve(coin);
+        } else {
+          reject(error);
+        }
+      });
+    });
+    return p;
   }
 
   initContracts() {
@@ -171,6 +202,7 @@ class App extends Component {
             Object.keys(this.state.network).map(key => <p key={key}>{key}:
             &nbsp;{typeof(this.state.network[key]) === 'boolean' ? (this.state.network[key] ? 'true' : 'false') : this.state.network[key]}</p>)
           }
+          <Coins state={this.state}/>
         </div>
       :
         <NoWeb3 />
