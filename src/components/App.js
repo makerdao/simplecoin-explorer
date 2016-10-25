@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Web3 from 'web3';
 import NoWeb3 from './NoWeb3';
 import Coins from './Coins';
+import Coin from './Coin';
 import simplecoin from '../../simplecoin/build/js_module';
 import feedbase from '../../node_modules/feedbase/build/js_module';
 import logo from '../logo.svg';
@@ -15,8 +16,6 @@ class App extends Component {
     ))
     this.web3 = web3;
     this.state = {
-      coinsCount: 0,
-      coins: [],
       network: {
         syncing: null,
         startingBlock: null,
@@ -28,7 +27,8 @@ class App extends Component {
         network: null,
         accounts: null,
         defaultAccount: null
-      }
+      },
+      coins: [],
     };
 
     this.checkNetwork = this.checkNetwork.bind(this);
@@ -64,7 +64,6 @@ class App extends Component {
 
     simplecoin.class(this.web3, 'morden');
     simplecoin.objects.factory.count((e, r) => {
-      this.setState({ coinsCount: r.toNumber() });
       const promises = [];
       for (let i=0; i<r; i++) {
         promises.push(this.getCoin(i));
@@ -190,6 +189,16 @@ class App extends Component {
     });
   }
 
+  parseUrl() {
+    const params = window.location.hash.replace(/^#\/?|\/$/g, '').split('/');
+    if(params.length > 0 && params[0] !== ''/* && this.state.coins.indexOf(params[0]) !== -1*/) {
+      return params[0];
+    }
+    else {
+      return null;
+    }
+  }
+
   render() {
     return (
       this.state.network.isConnected ? 
@@ -202,7 +211,11 @@ class App extends Component {
             Object.keys(this.state.network).map(key => <p key={key}>{key}:
             &nbsp;{typeof(this.state.network[key]) === 'boolean' ? (this.state.network[key] ? 'true' : 'false') : this.state.network[key]}</p>)
           }
-          <Coins state={this.state}/>
+          { /*console.log(this.parseUrl())*/ }
+          { /*console.log(this.parseUrl() !== null)*/ }
+          {
+            (this.parseUrl() !== null) ? <Coin coins={this.state.coins} index={this.parseUrl()}/> : <Coins coins={this.state.coins}/>
+          }
         </div>
       :
         <NoWeb3 />

@@ -1,20 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Coins extends Component {
-  constructor() {
-    super();
-  }
-
-  render() {
-    return (
-      <div>
-        <div>Coins: {this.props.state.coinsCount}</div>
-        {
-          Object.keys(this.props.state.coins).map(key => <p key={key}>{this.props.state.coins[key]['coinId']}</p>)
-        }
-      </div>
-    );
-  }
+const Coins = (props) => {
+  return (
+    <div>
+      <div>Coins: {props.coins.length}</div>
+      {
+        Object.keys(props.coins).map(key => <p key={key}><a href={"#" + props.coins[key]['coinId']}>{props.coins[key]['coinId']}</a></p>)
+      }
+    </div>
+  );
 }
 
 export default Coins;
