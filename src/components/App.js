@@ -3,7 +3,7 @@ import Web3 from 'web3';
 import NoWeb3 from './NoWeb3';
 import Coins from './Coins';
 import Coin from './Coin';
-import simplecoin from '../../simplecoin/build/js_module';
+import simplecoinFactory from '../../simplecoin/build/js_module';
 import feedbase from '../../node_modules/feedbase/build/js_module';
 import logo from '../logo.svg';
 import './App.css';
@@ -35,6 +35,7 @@ class App extends Component {
     this.initNetwork = this.initNetwork.bind(this);
     this.checkAccounts = this.checkAccounts.bind(this);
     this.initContracts = this.initContracts.bind(this);
+    this.getCoin = this.getCoin.bind(this);
 
     this.web3.eth.isSyncing((error, sync) => {
       if (!error) {
@@ -61,22 +62,11 @@ class App extends Component {
         }
       }
     });
-
-    simplecoin.class(this.web3, 'morden');
-    simplecoin.objects.factory.count((e, r) => {
-      const promises = [];
-      for (let i=0; i<r; i++) {
-        promises.push(this.getCoin(i));
-        Promise.all(promises).then((resultProm) => {
-          this.setState({ coins: resultProm });
-        });
-      }
-    });
   }
 
   getCoin(i) {
     const p = new Promise((resolve, reject) => {
-      simplecoin.objects.factory.coins(i, (error, result) => {
+      simplecoinFactory.objects.factory.coins(i, (error, result) => {
         if (!error) {
           const coin = {
             coinId: result,
@@ -91,14 +81,26 @@ class App extends Component {
   }
 
   initContracts() {
-    window.simplecoin = simplecoin;
+    // Testing purpose
+    window.simplecoinFactory = simplecoinFactory;
     window.feedbase = feedbase;
+    //
+    simplecoinFactory.class(this.web3, this.state.network.network);
+    simplecoinFactory.objects.factory.count((e, r) => {
+      const promises = [];
+      for (let i=0; i<r; i++) {
+        promises.push(this.getCoin(i));
+        Promise.all(promises).then((resultProm) => {
+          this.setState({ coins: resultProm });
+        });
+      }
+    });
   }
 
   componentDidMount() {
     this.checkNetwork();
     this.checkAccounts();
-    //this.initContracts();
+    this.initContracts();
 
     const checkAccountsInterval = setInterval(this.checkAccounts, 10000);
     const checkNetworkInterval = setInterval(this.checkNetwork, 3000);
@@ -211,10 +213,8 @@ class App extends Component {
             Object.keys(this.state.network).map(key => <p key={key}>{key}:
             &nbsp;{typeof(this.state.network[key]) === 'boolean' ? (this.state.network[key] ? 'true' : 'false') : this.state.network[key]}</p>)
           }
-          { /*console.log(this.parseUrl())*/ }
-          { /*console.log(this.parseUrl() !== null)*/ }
           {
-            (this.parseUrl() !== null) ? <Coin coins={this.state.coins} index={this.parseUrl()}/> : <Coins coins={this.state.coins}/>
+            (this.parseUrl() !== null) ? <Coin coins={this.state.coins} index={this.parseUrl()} simplecoinFactory={simplecoinFactory}/> : <Coins coins={this.state.coins}/>
           }
         </div>
       :

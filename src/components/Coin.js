@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 
 class Coin extends Component {
-  /*contructor() {
-    super();
-  }*/
+  constructor(props) {
+    super(props);
+    const simplecoin = props.simplecoinFactory.classes.Simplecoin.at(props.index);
+    console.log(simplecoin);
+  }
   render() {
     return (
       <div>
