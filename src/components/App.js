@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import web3 from '../web3';
 import Coins from './Coins';
 import Coin from './Coin';
+import Accounts from './Accounts';
 import NoEthereum from './NoEthereum';
 import simplecoinFactory from '../../simplecoin/build/js_module';
 import feedbase from '../../node_modules/feedbase/build/js_module';
@@ -31,6 +32,7 @@ class App extends Component {
     this.checkNetwork = this.checkNetwork.bind(this);
     this.initNetwork = this.initNetwork.bind(this);
     this.checkAccounts = this.checkAccounts.bind(this);
+    this.changeAccount = this.changeAccount.bind(this);
     this.initContracts = this.initContracts.bind(this);
     this.getCoin = this.getCoin.bind(this);
     this.updateCoin = this.updateCoin.bind(this);
@@ -232,9 +234,17 @@ class App extends Component {
     );
   }
 
+  changeAccount(newAccount) {
+    console.log('New account: ', newAccount);
+    const networkState = {...this.state.network};
+    networkState['defaultAccount'] = newAccount;
+    this.setState({ network: networkState });
+  }
+
   renderContent() {
     return (
       <div className="row">
+        <Accounts changeAccount={this.changeAccount} />
         <div className="col-md-12">
           {this.renderNetworkVariables()}
         </div>
