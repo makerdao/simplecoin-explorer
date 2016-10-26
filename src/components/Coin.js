@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class Coin extends Component {
   constructor(props) {
     super();
-    this.simplecoin = props.simplecoinFactory.classes.Simplecoin.at(props.index);
+    this.simplecoin = props.simplecoinFactory.classes.Simplecoin.at(props.coin.coinId);
 
     //Testing purpose
     window.simplecoin = this.simplecoin;
@@ -18,7 +18,7 @@ class Coin extends Component {
 
   getValueAndUpdate(field) {
     this.simplecoin[field]((error, result) => {
-      this.props.updateCoin(this.props.index, field, result);
+      this.props.updateCoin(this.props.coin.coinId, field, result);
     });
   }
   
@@ -26,7 +26,7 @@ class Coin extends Component {
     return (
       <div>
         {
-          Object.keys(this.props.state.coins[this.props.index]).map(key => <p key={key}> {key + ": " + this.props.state.coins[this.props.index][key]} </p>)
+          Object.keys(this.props.coin).map(key => <p key={key}> {key + ": " + this.props.coin[key]} </p>)
         }
         <p><a href="#">Back</a></p>
       </div>
