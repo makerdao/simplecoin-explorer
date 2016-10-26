@@ -241,7 +241,7 @@ class App extends Component {
         {this.renderNetworkVariables()}
         {
         (this.parseUrl() !== null)
-              ? <Coin state={this.state} index={this.parseUrl()} updateCoin={this.updateCoin} simplecoinFactory={simplecoinFactory}/>
+              ? <Coin coin={this.state.coins[this.parseUrl()]} updateCoin={this.updateCoin} simplecoinFactory={simplecoinFactory}/>
               : <Coins coins={this.state.coins}/>
         }
       </div>
