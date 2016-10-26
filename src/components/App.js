@@ -137,6 +137,9 @@ class App extends Component {
       // Check if we are synced
       if (isConnected) {
         web3.eth.getBlock('latest', (e, res) => {
+          if (typeof(res) === 'undefined') {
+            console.debug('YIKES! getBlock returned undefined!');
+          }
           if (res.number >= this.state.network.latestBlock) {
             const networkState = {...this.state.network};
             networkState['latestBlock'] = res.number;
