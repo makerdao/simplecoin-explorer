@@ -78,7 +78,7 @@ class App extends Component {
             feed: null,
             spread: null,
             totalSupply: null,
-            collateralTypes: {}   
+            types: []   
           };
           resolve(coin);
         } else {
