@@ -17,6 +17,9 @@ const Coins = (props) => {
                 </div>
                 <div className="panel-body">
                   <p>
+                    {props.coins[key]['coinId']}
+                  </p>
+                  <p>
                     Owner: {props.coins[key].owner || '(Pending...)'}
                   </p>
                 </div>
