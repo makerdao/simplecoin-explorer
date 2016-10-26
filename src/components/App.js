@@ -121,18 +121,13 @@ class App extends Component {
     this.checkAccounts();
     this.initContracts();
 
-    const checkAccountsInterval = setInterval(this.checkAccounts, 10000);
-    const checkNetworkInterval = setInterval(this.checkNetwork, 3000);
-    // store checkAccountsInterval in the state so it can be accessed later:
-    const networkState = {...this.state.network};
-    networkState['checkAccountsInterval'] = checkAccountsInterval;
-    networkState['checkNetworkInterval'] = checkNetworkInterval;
-    this.setState({ network: networkState });
+    this.checkAccountsInterval = setInterval(this.checkAccounts, 10000);
+    this.checkNetworkInterval = setInterval(this.checkNetwork, 3000);
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.network.checkAccountsInterval);
-    clearInterval(this.state.network.checkNetworkInterval);
+    clearInterval(this.checkAccountsInterval);
+    clearInterval(this.checkNetworkInterval);
   }
 
   checkNetwork() {
