@@ -10,12 +10,18 @@ const Coins = (props) => {
       {
         Object.keys(props.coins).map(key => 
           <div className="col-sm-6 Coins-box" key={key}>
-            <p>
-              <a href={`#${props.coins[key]['coinId']}`}>{props.coins[key]['coinId']}</a>
-            </p>
-            <p>
-              Owner: {props.coins[key].owner || '(Pending...)'}
-            </p>
+            <a href={`#${props.coins[key]['coinId']}`}>
+              <div className="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Coin Name...</h3>
+                </div>
+                <div className="panel-body">
+                  <p>
+                    Owner: {props.coins[key].owner || '(Pending...)'}
+                  </p>
+                </div>
+              </div>
+            </a>
           </div>
         )
       }
