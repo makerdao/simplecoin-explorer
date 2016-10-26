@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Web3 from 'web3';
+import web3 from '../web3';
 import Coins from './Coins';
 import Coin from './Coin';
 import NoEthereum from './NoEthereum';
@@ -11,10 +11,7 @@ import './App.css';
 class App extends Component {
   constructor() {
     super();
-    let web3 = new Web3(window.web3 ? window.web3.currentProvider : (
-      new Web3.providers.HttpProvider("http://localhost:8545")
-    ))
-    this.web3 = web3;
+
     this.state = {
       network: {
         syncing: null,
@@ -41,7 +38,7 @@ class App extends Component {
     this.renderContent = this.renderContent.bind(this);
     this.renderNetworkVariables = this.renderNetworkVariables.bind(this);
 
-    this.web3.eth.isSyncing((error, sync) => {
+    web3.eth.isSyncing((error, sync) => {
       if (!error) {
         const networkState = {...this.state.network};
         networkState['syncing'] = (sync !== false);
@@ -50,7 +47,7 @@ class App extends Component {
         // Stop all app activity
         if (sync === true) {
           // We use `true`, so it stops all filters, but not the web3.eth.syncing polling
-          this.web3.reset(true);
+          web3.reset(true);
           this.checkNetwork();
         // show sync info
         } else if (sync) {
@@ -101,7 +98,7 @@ class App extends Component {
     window.simplecoinFactory = simplecoinFactory;
     window.feedbase = feedbase;
     //
-    simplecoinFactory.class(this.web3, this.state.network.network);
+    simplecoinFactory.class(web3, this.state.network.network);
     simplecoinFactory.objects.factory.count((e, r) => {
       const promises = [];
       for (let i=0; i<r; i++) {
@@ -132,12 +129,12 @@ class App extends Component {
   }
 
   checkNetwork() {
-    this.web3.version.getNode((error) => {
+    web3.version.getNode((error) => {
       const isConnected = !error;
 
       // Check if we are synced
       if (isConnected) {
-        this.web3.eth.getBlock('latest', (e, res) => {
+        web3.eth.getBlock('latest', (e, res) => {
           if (res.number >= this.state.network.latestBlock) {
             const networkState = {...this.state.network};
             networkState['latestBlock'] = res.number;
@@ -155,7 +152,7 @@ class App extends Component {
       // https://github.com/ethereum/meteor-dapp-wallet/blob/90ad8148d042ef7c28610115e97acfa6449442e3/app/client/lib/ethereum/walletInterface.js#L32-L46
       if (this.state.network.isConnected !== isConnected) {
         if (isConnected === true) {
-          this.web3.eth.getBlock(0, (e, res) => {
+          web3.eth.getBlock(0, (e, res) => {
             let network = false;
             if (!e) {
               switch (res.hash) {
@@ -196,7 +193,7 @@ class App extends Component {
   }
 
   checkAccounts() {
-    this.web3.eth.getAccounts((error, accounts) => {
+    web3.eth.getAccounts((error, accounts) => {
       if (!error) {
         const networkState = {...this.state.network};
         networkState['accounts'] = accounts;
