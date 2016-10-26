@@ -12,8 +12,8 @@ const Coins = (props) => {
           <div className="col-sm-6 Coins-box" key={key}>
             <a href={`#${props.coins[key]['coinId']}`}>
               <div className="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">Coin Name...</h3>
+                <div className="panel-heading">
+                  <h3 className="panel-title">Coin Name...</h3>
                 </div>
                 <div className="panel-body">
                   <p>
