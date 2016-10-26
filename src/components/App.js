@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Web3 from 'web3';
 import Coins from './Coins';
 import Coin from './Coin';
+import NoEthereum from './NoEthereum';
 import simplecoinFactory from '../../simplecoin/build/js_module';
 import feedbase from '../../node_modules/feedbase/build/js_module';
 import logo from '../logo.svg';
@@ -217,9 +218,7 @@ class App extends Component {
 
   renderNoWeb3() {
     return (
-      <div>
-        No Web3
-      </div>
+      <NoEthereum />
     );
   }
 
@@ -227,8 +226,9 @@ class App extends Component {
     return (
       <div>
         {
-          Object.keys(this.state.network).map(key => <p key={key}>{key}:
-          &nbsp;{typeof(this.state.network[key]) === 'boolean' ? (this.state.network[key] ? 'true' : 'false') : this.state.network[key]}</p>)
+          Object.keys(this.state.network).map(key => <p key={key}>
+            {key}: {typeof(this.state.network[key]) === 'boolean' ? (this.state.network[key] ? 'true' : 'false') : this.state.network[key]}
+          </p>)
         }
         <hr />
       </div>
@@ -237,13 +237,17 @@ class App extends Component {
 
   renderContent() {
     return (
-      <div>
-        {this.renderNetworkVariables()}
-        {
-        (this.parseUrl() !== null)
-              ? <Coin coin={this.state.coins[this.parseUrl()]} updateCoin={this.updateCoin} simplecoinFactory={simplecoinFactory}/>
-              : <Coins coins={this.state.coins}/>
-        }
+      <div className="row">
+        <div className="col-md-12">
+          {this.renderNetworkVariables()}
+        </div>
+        <div className="col-md-12">
+          {
+          (this.parseUrl() !== null)
+                ? <Coin coin={this.state.coins[this.parseUrl()]} updateCoin={this.updateCoin} simplecoinFactory={simplecoinFactory}/>
+                : <Coins coins={this.state.coins}/>
+          }
+        </div>
       </div>
     )
   }
@@ -255,10 +259,11 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Simplecoin Explorer</h2>
         </div>
-        {
-          this.state.network.isConnected ? this.renderContent() : this.renderNoWeb3() 
-        }
-        {}
+        <div className="container">
+          {
+            this.state.network.isConnected ? this.renderContent() : this.renderNoWeb3() 
+          }
+        </div>
       </div>     
     );
   }

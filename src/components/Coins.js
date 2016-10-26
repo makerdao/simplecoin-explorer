@@ -1,11 +1,29 @@
 import React from 'react';
+import './Coins.css';
 
 const Coins = (props) => {
   return (
-    <div>
-      <div>Coins: {props.coins.length}</div>
+    <div className="row">
+      <div className="col-md-12">
+        <p>Coins: {Object.keys(props.coins).length}</p>
+      </div>
       {
-        Object.keys(props.coins).map(key => <p key={key}><a href={"#" + props.coins[key]['coinId']}>{props.coins[key]['coinId']}</a></p>)
+        Object.keys(props.coins).map(key => 
+          <div className="col-sm-6 Coins-box" key={key}>
+            <a href={`#${props.coins[key]['coinId']}`}>
+              <div className="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Coin Name...</h3>
+                </div>
+                <div className="panel-body">
+                  <p>
+                    Owner: {props.coins[key].owner || '(Pending...)'}
+                  </p>
+                </div>
+              </div>
+            </a>
+          </div>
+        )
       }
     </div>
   );

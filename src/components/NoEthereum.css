@@ -1,0 +1,105 @@
+.no-ethereum-section h2 {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  opacity: 0.8;
+  color: #222228
+}
+.no-ethereum-section .img-maker-logo {
+  width: 364px;
+  padding-bottom: 30px
+}
+.no-ethereum-section .img-ethereum-logo {
+  width: 61px;
+  padding-top: 30px;
+  margin-bottom: 40px
+}
+.no-ethereum-section .horizontal-line {
+  color: #DCDDE0;
+  border: 0px;
+  border-top: solid 1px #DCDDE0
+}
+.no-ethereum-section .p-not-found {
+  opacity: 0.50;
+  width: 925px;
+  display: inline-block;
+  margin-top: 50px;
+  margin-bottom: 70px;
+  letter-spacing: 0.6px
+}
+.no-ethereum-section .p-use-clients {
+  display: inline-block;
+  color: #546979;
+  font-family: 'Montserrat-SemiBold', sans-serif
+}
+.no-ethereum-section .p-connect-geth {
+  opacity: 1;
+  width: 925px;
+  color: #4F5362;
+  display: inline-block;
+  letter-spacing: 0.6px
+}
+.no-ethereum-section .div-clients {
+  height: 360px;
+  display: flex;
+  justify-content: center;
+  font-size: 21px;
+  color: #4F5362;
+  margin-bottom: 50px;
+  margin-top: 50px
+}
+.no-ethereum-section .div-metamask,
+.no-ethereum-section .div-mist {
+  background-color: #FFFFFF;
+  width: 340px;
+  height: 360px;
+  padding: 33px 10px 33px 27px;
+  opacity: 0.89;
+  border: 2px solid #EFF1F3;
+  box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.13);
+  border-radius: 4px;
+  margin: 0 20px
+}
+.no-ethereum-section .div-metamask h2,
+.no-ethereum-section .div-mist h2 {
+  margin-bottom: 45px
+}
+.no-ethereum-section .div-metamask p,
+.no-ethereum-section .div-mist p {
+  display: table;
+  text-align: left;
+  margin-bottom: 20px
+}
+.no-ethereum-section .div-metamask .img-logo,
+.no-ethereum-section .div-mist .img-logo {
+  width: 85px
+}
+.no-ethereum-section .div-metamask .span-montserrat-semi-bold,
+.no-ethereum-section .div-mist .span-montserrat-semi-bold {
+  font-family: 'Montserrat-SemiBold', sans-serif;
+  font-size: 21px;
+  color: #4F5362
+}
+.no-ethereum-section .div-metamask .numberCircle,
+.no-ethereum-section .div-mist .numberCircle {
+  display: inline-block;
+  border-radius: 50%;
+  height: 28px;
+  width: 28px;
+  line-height: 28px;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  text-align: center;
+  border: solid 1px #CFD8DC;
+  font-size: 18px;
+  color: #222228;
+  opacity: 0.68
+}
+.no-ethereum-section .div-metamask .align-number,
+.no-ethereum-section .div-mist .align-number {
+  display: table-cell;
+  vertical-align: middle;
+  padding-right: 20px
+}
+.no-ethereum-section .div-metamask .a-link,
+.no-ethereum-section .div-mist .a-link {
+  color: #337ab7
+}
