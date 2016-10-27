@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import web3 from '../web3';
 import Coins from './Coins';
 import Coin from './Coin';
+import NavBar from './NavBar';
 import Accounts from './Accounts';
 import NoEthereum from './NoEthereum';
 import simplecoinFactory from '../../simplecoin/build/js_module';
@@ -38,7 +39,6 @@ class App extends Component {
     this.updateCoin = this.updateCoin.bind(this);
     this.renderNoWeb3 = this.renderNoWeb3.bind(this);
     this.renderContent = this.renderContent.bind(this);
-    this.renderNetworkVariables = this.renderNetworkVariables.bind(this);
 
     web3.eth.isSyncing((error, sync) => {
       if (!error) {
@@ -224,19 +224,6 @@ class App extends Component {
     );
   }
 
-  renderNetworkVariables() {
-    return (
-      <div>
-        {
-          Object.keys(this.state.network).map(key => <p key={key}>
-            {key}: {typeof(this.state.network[key]) === 'boolean' ? (this.state.network[key] ? 'true' : 'false') : this.state.network[key]}
-          </p>)
-        }
-        <hr />
-      </div>
-    );
-  }
-
   changeAccount(newAccount) {
     console.log('New account: ', newAccount);
     const networkState = {...this.state.network};
@@ -247,10 +234,6 @@ class App extends Component {
   renderContent() {
     return (
       <div className="row">
-        <Accounts changeAccount={this.changeAccount} />
-        <div className="col-md-12">
-          {this.renderNetworkVariables()}
-        </div>
         <div className="col-md-12">
           {
           (this.parseUrl() !== null)
@@ -265,10 +248,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Simplecoin Explorer</h2>
-        </div>
+        <NavBar {...this.state.network} />
         <div className="container">
           {
             this.state.network.isConnected ? this.renderContent() : this.renderNoWeb3() 
