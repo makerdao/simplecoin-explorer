@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import web3 from '../web3';
 
 class Coin extends Component {
   constructor(props) {
@@ -74,16 +75,18 @@ class Coin extends Component {
 
   renderCollateralType(key, row) {
     return(
-      <div key={key}>
-        <p>Collateral type: {key}</p>
-        <p>Token: {row['token']}</p>
-        <p>Vault: {row['vault']}</p>
-        <p>Price feed: {row['feed'].toNumber()}</p>
-        <p>Spread: {row['spread'].toNumber()}</p>
-        <p>Debt Ceiling: {row['ceiling'].toNumber()}</p>
-        <p>Debt: {row['debt'].toNumber()}</p>
-        <p>Your balance: {row['balanceOf'].toNumber()}</p>
-      </div>
+      <table key={key}>
+        <tbody>
+          <tr><td>Collateral type:</td><td>{key}{Number(row['token']) ? '' : ' (cancelled)'}</td></tr>
+          <tr><td>Token:</td><td>{row['token']}</td></tr>
+          <tr><td>Vault:</td><td>{row['vault']}</td></tr>
+          <tr><td>Price feed:</td><td>{row['feed'].toNumber()}</td></tr>
+          <tr><td>Spread:</td><td>{row['spread'].toNumber()}</td></tr>
+          <tr><td>Debt Ceiling:</td><td>{row['ceiling'].toNumber()}</td></tr>
+          <tr><td>Debt:</td><td>{row['debt'].toNumber()}</td></tr>
+          <tr><td>Your balance:</td><td>{row['balanceOf'].toNumber()}</td></tr>
+        </tbody>
+      </table>
     )
   }
   
@@ -92,11 +95,16 @@ class Coin extends Component {
     for (let i=0; i<this.props.coin.types.length; i++) {
       collateralTypes.push(this.renderCollateralType(i, this.props.coin.types[i]));
     }
+    let rules = this.props.coin.rules;
+    if(typeof(this.props.coin.rules) === 'string') {
+      rules = web3.toAscii(this.props.coin.rules);
+    }
+    
     return (
       <div>
         <p>CoinId: {this.props.coin.coinId}</p>
         <p>Owner: {this.props.coin.owner}</p>
-        <p>Rules: {this.props.coin.rules}</p>
+        <p>Rules: {rules}</p>
         <p>Collateral types: {this.props.coin.types.length}</p>
         { collateralTypes }
         <p><a href="#">Back</a></p>
