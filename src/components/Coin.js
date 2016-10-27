@@ -8,14 +8,18 @@ class Coin extends Component {
 
     this.getValueFromContract = this.getValueFromContract.bind(this);
     this.updateCoinValue = this.updateCoinValue.bind(this);
+    this.getBalanceOfCollateral = this.getBalanceOfCollateral.bind(this);
 
     //Testing purpose
     window.simplecoin = this.simplecoin;
     //
 
+    this.updateCoinValue('feedbase');
     this.updateCoinValue('owner');
     this.updateCoinValue('rules');
     this.updateCoinValue('totalSupply');
+    this.updateCoinValue('balanceOf');
+    
     this.updateCoinCollateral();
   }
 
@@ -55,8 +59,11 @@ class Coin extends Component {
       
       for(let collateralId=0; collateralId<typesCount; collateralId++) {
         Object.keys(collateralType).map(key => {
-          promises.push(this.getValueFromContract(key, collateralId));
-          indexes.push({key, collateralId});
+          if(key !== 'balanceOf') {
+            promises.push(this.getValueFromContract(key, collateralId));
+            indexes.push({key, collateralId});
+          }
+          return true;
         }); 
       }
 
@@ -68,9 +75,33 @@ class Coin extends Component {
           }
           types[indexes[i]['collateralId']][indexes[i]['key']] = resultProm[i];
         }
-        this.props.updateCoin(this.props.coin.coinId, 'types', types);
+        const promises2 = [];
+        for(let i=0; i<types.length; i++) {
+          promises2.push(this.getBalanceOfCollateral(types[i]['token']));
+        }
+
+        Promise.all(promises2).then((resultProm2) => {
+          for(let i=0; i<types.length; i++) {
+            types[i]['balanceOf'] = resultProm2[i];
+          }
+          this.props.updateCoin(this.props.coin.coinId, 'types', types);
+        });
       });
     });
+  }
+
+  getBalanceOfCollateral(token) {
+    const p = new Promise((resolve, reject) => {
+      const tokenContract = this.props.simplecoinFactory.classes.Simplecoin.at(token);
+      tokenContract.balanceOf(this.props.account, (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      });
+    });
+    return p;
   }
 
   renderCollateralType(key, row) {
@@ -84,7 +115,7 @@ class Coin extends Component {
           <tr><td>Spread:</td><td>{row['spread'].toNumber()}</td></tr>
           <tr><td>Debt Ceiling:</td><td>{row['ceiling'].toNumber()}</td></tr>
           <tr><td>Debt:</td><td>{row['debt'].toNumber()}</td></tr>
-          <tr><td>Your balance:</td><td>{row['balanceOf'].toNumber()}</td></tr>
+          <tr><td>Your balance:</td><td>{web3.fromWei(row['balanceOf'].toNumber())}</td></tr>
         </tbody>
       </table>
     )
@@ -95,16 +126,19 @@ class Coin extends Component {
     for (let i=0; i<this.props.coin.types.length; i++) {
       collateralTypes.push(this.renderCollateralType(i, this.props.coin.types[i]));
     }
-    let rules = this.props.coin.rules;
-    if(typeof(this.props.coin.rules) === 'string') {
-      rules = web3.toAscii(this.props.coin.rules);
-    }
+    
+    const  rules = typeof(this.props.coin.rules) === 'string' ? web3.toAscii(this.props.coin.rules) : this.props.coin.rules;
+    const  totalSupply = this.props.coin.totalSupply !== null ? this.props.coin.totalSupply.toNumber() : null;
+    const  balanceOf = this.props.coin.balanceOf !== null ? this.props.coin.balanceOf.toNumber() : null;
     
     return (
       <div>
-        <p>CoinId: {this.props.coin.coinId}</p>
+        <p>Coin: {this.props.coin.coinId}</p>
+        <p>Feedbase: {this.props.coin.feedbase}</p>
         <p>Owner: {this.props.coin.owner}</p>
         <p>Rules: {rules}</p>
+        <p>Total Supply: {totalSupply}</p>
+        <p>Your balance: {balanceOf}</p>
         <p>Collateral types: {this.props.coin.types.length}</p>
         { collateralTypes }
         <p><a href="#">Back</a></p>

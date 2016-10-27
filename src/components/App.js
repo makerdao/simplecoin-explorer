@@ -77,6 +77,7 @@ class App extends Component {
             rules: null,
             feed: null,
             spread: null,
+            balanceOf: null,
             totalSupply: null,
             types: []   
           };
@@ -101,6 +102,8 @@ class App extends Component {
     window.feedbase = feedbase;
     //
     simplecoinFactory.class(web3, this.state.network.network);
+    feedbase.class(web3, this.state.network.network);
+    
     simplecoinFactory.objects.factory.count((e, r) => {
       const promises = [];
       for (let i=0; i<r; i++) {
@@ -237,7 +240,7 @@ class App extends Component {
         <div className="col-md-12">
           {
           (this.parseUrl() !== null)
-                ? <Coin coin={this.state.coins[this.parseUrl()]} updateCoin={this.updateCoin} simplecoinFactory={simplecoinFactory}/>
+                ? <Coin coin={this.state.coins[this.parseUrl()]} updateCoin={this.updateCoin} simplecoinFactory={simplecoinFactory} account={this.state.network.defaultAccount}/>
                 : <Coins coins={this.state.coins}/>
           }
         </div>
