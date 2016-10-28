@@ -259,7 +259,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <NavBar {...this.state.network} />
+        <NavBar {...this.state.network} setUrl={this.setUrl}/>
         <div className="container">
           {
             this.state.network.isConnected ? this.renderContent() : this.renderNoWeb3() 

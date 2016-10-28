@@ -7,7 +7,7 @@ const NavBar = (props) => {
   return (
     <nav className="navbar navbar-inverse NavBar">
       <div className="container">
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand" href="#" onClick={(e) => props.setUrl('')}>
             <img className="NavBar-logo" alt="Brand" src={logo} />
           </a>
         <p className="navbar-text"><strong>{text}</strong></p>
