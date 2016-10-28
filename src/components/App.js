@@ -14,7 +14,10 @@ class App extends Component {
   constructor() {
     super();
 
+    const params = window.location.hash.replace(/^#\/?|\/$/g, '').split('/');
+
     this.state = {
+      url: params.length > 0 ? params[0] : '',
       network: {
         syncing: null,
         startingBlock: null,
@@ -39,6 +42,8 @@ class App extends Component {
     this.updateCoin = this.updateCoin.bind(this);
     this.renderNoWeb3 = this.renderNoWeb3.bind(this);
     this.renderContent = this.renderContent.bind(this);
+    this.setUrl = this.setUrl.bind(this);
+    this.parseUrl = this.parseUrl.bind(this);
 
     web3.eth.isSyncing((error, sync) => {
       if (!error) {
@@ -211,10 +216,13 @@ class App extends Component {
     });
   }
 
+  setUrl(hash) {
+    this.setState({ url: hash });
+  }
+
   parseUrl() {
-    const params = window.location.hash.replace(/^#\/?|\/$/g, '').split('/');
-    if(params.length > 0 && params[0] !== '' && this.state.coins[params[0]]) {
-      return params[0];
+    if(this.state.url !== '' && this.state.coins[this.state.url]) {
+      return this.state.url;
     }
     else {
       return null;
@@ -240,8 +248,8 @@ class App extends Component {
         <div className="col-md-12">
           {
           (this.parseUrl() !== null)
-                ? <Coin coin={this.state.coins[this.parseUrl()]} updateCoin={this.updateCoin} simplecoinFactory={simplecoinFactory} account={this.state.network.defaultAccount}/>
-                : <Coins coins={this.state.coins}/>
+                ? <Coin coin={this.state.coins[this.parseUrl()]} updateCoin={this.updateCoin} simplecoinFactory={simplecoinFactory} account={this.state.network.defaultAccount} setUrl={this.setUrl}/>
+                : <Coins coins={this.state.coins} setUrl={this.setUrl}/>
           }
         </div>
       </div>

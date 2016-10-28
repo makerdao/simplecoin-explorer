@@ -10,7 +10,7 @@ const Coins = (props) => {
       {
         Object.keys(props.coins).map(key => 
           <div className="col-sm-6 Coins-box" key={key}>
-            <a href={`#${props.coins[key]['coinId']}`}>
+            <a href={`#${props.coins[key]['coinId']}`} onClick={(e) => props.setUrl(props.coins[key]['coinId']) }>
               <div className="panel panel-default">
                 <div className="panel-heading">
                   <h3 className="panel-title">Coin Name...</h3>

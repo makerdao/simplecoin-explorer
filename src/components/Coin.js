@@ -130,7 +130,6 @@ class Coin extends Component {
     const  rules = typeof(this.props.coin.rules) === 'string' ? web3.toAscii(this.props.coin.rules) : this.props.coin.rules;
     const  totalSupply = this.props.coin.totalSupply !== null ? this.props.coin.totalSupply.toNumber() : null;
     const  balanceOf = this.props.coin.balanceOf !== null ? this.props.coin.balanceOf.toNumber() : null;
-    
     return (
       <div>
         <p>Coin: {this.props.coin.coinId}</p>
@@ -141,7 +140,7 @@ class Coin extends Component {
         <p>Your balance: {balanceOf}</p>
         <p>Collateral types: {this.props.coin.types.length}</p>
         { collateralTypes }
-        <p><a href="#">Back</a></p>
+        <p><a href="#" onClick={(e) => this.props.setUrl('') }>Back</a></p>
       </div>
     );
   }
