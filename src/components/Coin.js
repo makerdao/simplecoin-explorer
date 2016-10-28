@@ -71,7 +71,7 @@ class Coin extends Component {
         const types = [];
         for(let i=0; i<resultProm.length; i++) {
           if (typeof(types[indexes[i]['collateralId']]) === 'undefined') {
-            types[indexes[i]['collateralId']] = collateralType;
+            types[indexes[i]['collateralId']] = {...collateralType};
           }
           types[indexes[i]['collateralId']][indexes[i]['key']] = resultProm[i];
         }
@@ -93,6 +93,12 @@ class Coin extends Component {
   getBalanceOfCollateral(token) {
     const p = new Promise((resolve, reject) => {
       const tokenContract = this.props.simplecoinFactory.classes.Simplecoin.at(token);
+      //Testing purpose
+      if(typeof(window.tokenContracts) === 'undefined') {
+        window.tokenContracts = [];
+      }
+      window.tokenContracts.push(tokenContract);
+      //
       tokenContract.balanceOf(this.props.account, (error, result) => {
         if (!error) {
           resolve(result);
