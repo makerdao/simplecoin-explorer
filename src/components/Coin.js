@@ -9,16 +9,19 @@ class Coin extends Component {
     this.getValueFromContract = this.getValueFromContract.bind(this);
     this.updateCoinValue = this.updateCoinValue.bind(this);
     this.getBalanceOfCollateral = this.getBalanceOfCollateral.bind(this);
+    this.getBalanceOfCoin = this.getBalanceOfCoin.bind(this);
 
     //Testing purpose
     window.simplecoin = this.simplecoin;
     //
+  }
 
+  componentDidMount() {
     this.updateCoinValue('feedbase');
     this.updateCoinValue('owner');
     this.updateCoinValue('rules');
     this.updateCoinValue('totalSupply');
-    this.updateCoinValue('balanceOf');
+    this.updateCoinBalance();
     
     this.updateCoinCollateral();
   }
@@ -39,6 +42,12 @@ class Coin extends Component {
   updateCoinValue(field) {
     this.getValueFromContract(field).then((result) => {
       this.props.updateCoin(this.props.coin.coinId, field, result);
+    });
+  }
+
+  updateCoinBalance() {
+    this.getBalanceOfCoin().then((result) => {
+      this.props.updateCoin(this.props.coin.coinId, 'balanceOf', result);
     });
   }
 
@@ -90,6 +99,19 @@ class Coin extends Component {
     });
   }
 
+  getBalanceOfCoin() {
+    const p = new Promise((resolve, reject) => {
+      this.simplecoin.balanceOf(this.props.account, (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      });
+    });
+    return p;
+  }
+
   getBalanceOfCollateral(token) {
     const p = new Promise((resolve, reject) => {
       const tokenContract = this.props.simplecoinFactory.classes.Simplecoin.at(token);
@@ -134,8 +156,8 @@ class Coin extends Component {
     }
     
     const  rules = typeof(this.props.coin.rules) === 'string' ? web3.toAscii(this.props.coin.rules) : this.props.coin.rules;
-    const  totalSupply = this.props.coin.totalSupply !== null ? this.props.coin.totalSupply.toNumber() : null;
-    const  balanceOf = this.props.coin.balanceOf !== null ? this.props.coin.balanceOf.toNumber() : null;
+    const  totalSupply = this.props.coin.totalSupply !== null ? web3.fromWei(this.props.coin.totalSupply.toNumber()) : null;
+    const  balanceOf = this.props.coin.balanceOf !== null ? web3.fromWei(this.props.coin.balanceOf.toNumber()) : null;
     return (
       <div>
         <p>Coin: {this.props.coin.coinId}</p>
