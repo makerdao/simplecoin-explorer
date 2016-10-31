@@ -141,7 +141,7 @@ class Coin extends Component {
           <tr><td>Vault:</td><td>{row['vault']}</td></tr>
           <tr><td>Price feed:</td><td>{row['feed'].toNumber()}</td></tr>
           <tr><td>Spread:</td><td>{row['spread'].toNumber()}</td></tr>
-          <tr><td>Debt Ceiling:</td><td>{row['ceiling'].toNumber()}</td></tr>
+          <tr><td>Debt Ceiling:</td><td>{web3.fromWei(row['ceiling'].toNumber())}</td></tr>
           <tr><td>Debt:</td><td>{web3.fromWei(row['debt'].toNumber())}</td></tr>
           <tr><td>Your balance:</td><td>{web3.fromWei(row['balanceOf'].toNumber())}</td></tr>
         </tbody>
