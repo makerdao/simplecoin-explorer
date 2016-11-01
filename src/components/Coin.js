@@ -15,6 +15,12 @@ class Coin extends Component {
     this.getBalanceOfCollateral = this.getBalanceOfCollateral.bind(this);
     this.getBalanceOfCoin = this.getBalanceOfCoin.bind(this);
     this.getFeedPrice = this.getFeedPrice.bind(this);
+    this.updateHistory = this.updateHistory.bind(this);
+
+    this.state = {
+      history: [],
+    }
+
 
     //Testing purpose
     window.simplecoin = this.simplecoin;
@@ -29,7 +35,25 @@ class Coin extends Component {
     this.updateCoinBalance();
     this.updateFeedbaseAndCollateral('feedbase');
 
-    //TokenAuction.objects.auction.NewAuction({ }, { fromBlock: 0 }).get((error, result) => {
+    this.simplecoin.Transfer({ }, { fromBlock: 0 }).get((error, result) => {
+      if(!error) {
+        this.updateHistory(result);
+      }  
+    });
+  }
+
+  updateHistory(result) {
+    const transactions = [];
+    for(let i=0; i<result.length; i++) {
+      transactions.push({type: 'transaction', from: result[i].args.from,  to: result[i].args.to,  value: result[i].args.value})
+    }
+    let history = {...this.state.history};
+    if(history.length > 0) {
+      history = history.concat(transactions);
+    } else {
+      history = transactions;
+    }
+    this.setState({ history: history });
   }
 
   getValueFromContract(field, param) {
@@ -194,11 +218,27 @@ class Coin extends Component {
       </tr>
     )
   }
+
+  renderHistory(key, row) {
+    return(
+      <tr key={key}>
+        <td>{row['type']}</td>
+        <td>{row['from']}</td>
+        <td>{row['to']}</td>
+        <td>{web3.fromWei(row['value'].toNumber())}</td>
+      </tr>
+    )
+  }
   
   render() {
     const collateralTypes = [];
     for (let i=0; i<this.props.coin.types.length; i++) {
       collateralTypes.push(this.renderCollateralType(i, this.props.coin.types[i]));
+    }
+
+    const history = [];
+    for (let i=0; i<this.state.history.length; i++) {
+      history.push(this.renderHistory(i, this.state.history[i]));
     }
     
     const  rules = typeof(this.props.coin.rules) === 'string' ? web3.toAscii(this.props.coin.rules) : this.props.coin.rules;
@@ -233,6 +273,19 @@ class Coin extends Component {
           </tbody>
         </table>
         <h3>History</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            { history }
+          </tbody>
+        </table>
       </div>
     );
   }
