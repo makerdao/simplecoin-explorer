@@ -6,3 +6,14 @@
 .NavBar-logo { 
   height: 30px;
 }
+
+span[class*="glyphicon-one-fine"] {
+  margin-bottom: -.8em;
+  overflow: hidden;
+}
+
+.glyphicon-one-fine-green-dot:before {
+  content:"\25cf";
+  font-size: 3em;
+  color: green;
+}

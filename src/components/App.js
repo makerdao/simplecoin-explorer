@@ -6,7 +6,6 @@ import NavBar from './NavBar';
 import Accounts from './Accounts';
 import NoEthereum from './NoEthereum';
 import simplecoinFactory from '../../simplecoin/build/js_module';
-import logo from '../logo.svg';
 import './App.css';
 
 class App extends Component {
@@ -244,7 +243,7 @@ class App extends Component {
   }
 
   changeAccount(newAccount) {
-    console.log('New account: ', newAccount);
+    console.log('New account selected: ', newAccount);
     const networkState = {...this.state.network};
     networkState['defaultAccount'] = newAccount;
     this.setState({ network: networkState });
@@ -276,6 +275,7 @@ class App extends Component {
     return (
       <div className="App">
         <NavBar {...this.state.network} setUrl={this.setUrl}/>
+        <Accounts changeAccount={this.changeAccount} />
         <div className="container">
           {
             this.state.network.isConnected ? this.renderContent() : this.renderNoWeb3() 
