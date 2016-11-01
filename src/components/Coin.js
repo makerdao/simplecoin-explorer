@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import web3 from '../web3';
+import './Coin.css';
 
 class Coin extends Component {
   constructor(props) {
@@ -10,6 +11,7 @@ class Coin extends Component {
     this.updateCoinValue = this.updateCoinValue.bind(this);
     this.getBalanceOfCollateral = this.getBalanceOfCollateral.bind(this);
     this.getBalanceOfCoin = this.getBalanceOfCoin.bind(this);
+    this.getFeedPrice = this.getFeedPrice.bind(this);
 
     //Testing purpose
     window.simplecoin = this.simplecoin;
@@ -78,11 +80,17 @@ class Coin extends Component {
 
       Promise.all(promises).then((resultProm) => {
         const types = [];
+        const feedIds = [];
+
         for(let i=0; i<resultProm.length; i++) {
           if (typeof(types[indexes[i]['collateralId']]) === 'undefined') {
             types[indexes[i]['collateralId']] = {...collateralType};
           }
           types[indexes[i]['collateralId']][indexes[i]['key']] = resultProm[i];
+          
+          if(indexes[i]['key'] == 'feed' && feedIds.indexOf(resultProm[i].toNumber()) === -1) {
+            feedIds.push(resultProm[i].toNumber());
+          }
         }
         const promises2 = [];
         for(let i=0; i<types.length; i++) {
@@ -95,6 +103,12 @@ class Coin extends Component {
           }
           this.props.updateCoin(this.props.coin.coinId, 'types', types);
         });
+
+        for(let i=0; i<feedIds.length; i++) {
+          this.getFeedPrice(feedIds[i]).then((result) => {
+            this.props.updateFeedPrices(feedIds[i], web3.toBigNumber(result[0]));
+          });
+        }
       });
     });
   }
@@ -132,20 +146,36 @@ class Coin extends Component {
     return p;
   }
 
+  getFeedPrice(feedId) {
+    const p = new Promise((resolve, reject) => {
+      this.props.feedbase.objects.feedbase.get.call(feedId, (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      });
+    });
+    return p;
+  }
+
   renderCollateralType(key, row) {
+    let feedPrice = '';
+    if(row['feed'].toNumber() && this.props.feedPrices[row['feed'].toNumber()]) {
+      feedPrice = web3.fromWei(this.props.feedPrices[row['feed'].toNumber()].toNumber());
+    }
     return(
-      <table key={key}>
-        <tbody>
-          <tr><td>Collateral type:</td><td>{key}{Number(row['token']) ? '' : ' (cancelled)'}</td></tr>
-          <tr><td>Token:</td><td>{row['token']}</td></tr>
-          <tr><td>Vault:</td><td>{row['vault']}</td></tr>
-          <tr><td>Price feed:</td><td>{row['feed'].toNumber()}</td></tr>
-          <tr><td>Spread:</td><td>{row['spread'].toNumber()}</td></tr>
-          <tr><td>Debt Ceiling:</td><td>{web3.fromWei(row['ceiling'].toNumber())}</td></tr>
-          <tr><td>Debt:</td><td>{web3.fromWei(row['debt'].toNumber())}</td></tr>
-          <tr><td>Your balance:</td><td>{web3.fromWei(row['balanceOf'].toNumber())}</td></tr>
-        </tbody>
-      </table>
+      <tr key={key}>
+        <td>{key}{Number(row['token']) ? '' : ' (cancelled)'}</td>
+        <td>{row['token']}</td>
+        <td>{row['vault']}</td>
+        <td>{row['feed'].toNumber()}</td>
+        <td>{feedPrice}</td>
+        <td>{row['spread'].toNumber()}</td>
+        <td>{web3.fromWei(row['ceiling'].toNumber())}</td>
+        <td>{web3.fromWei(row['debt'].toNumber())}</td>
+        <td>{web3.fromWei(row['balanceOf'].toNumber())}</td>
+      </tr>
     )
   }
   
@@ -167,7 +197,24 @@ class Coin extends Component {
         <p>Total Supply: {totalSupply}</p>
         <p>Your balance: {balanceOf}</p>
         <p>Collateral types: {this.props.coin.types.length}</p>
-        { collateralTypes }
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Token</th>
+              <th>Vault</th>
+              <th>Price Feed Id</th>
+              <th>Price</th>
+              <th>Spread</th>
+              <th>Debt Ceiling</th>
+              <th>Debt</th>
+              <th>Your balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            { collateralTypes }
+          </tbody>
+        </table>
         <p><a href="#" onClick={(e) => this.props.setUrl('') }>Back</a></p>
       </div>
     );

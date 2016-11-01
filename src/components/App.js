@@ -31,6 +31,7 @@ class App extends Component {
         defaultAccount: null
       },
       coins: {},
+      feedPrices: {}
     };
 
     this.checkNetwork = this.checkNetwork.bind(this);
@@ -40,6 +41,7 @@ class App extends Component {
     this.initContracts = this.initContracts.bind(this);
     this.getCoin = this.getCoin.bind(this);
     this.updateCoin = this.updateCoin.bind(this);
+    this.updateFeedPrices = this.updateFeedPrices.bind(this);
     this.renderNoWeb3 = this.renderNoWeb3.bind(this);
     this.renderContent = this.renderContent.bind(this);
     this.setUrl = this.setUrl.bind(this);
@@ -99,6 +101,12 @@ class App extends Component {
     const coins = {...this.state.coins};
     coins[index][field] = value;
     this.setState({ coins: coins });
+  }
+
+  updateFeedPrices(index, value) {
+    const feedPrices = {...this.state.feedPrices};
+    feedPrices[index] = value;
+    this.setState({ feedPrices: feedPrices });
   }
 
   initContracts() {
@@ -248,8 +256,16 @@ class App extends Component {
         <div className="col-md-12">
           {
           (this.parseUrl() !== null)
-                ? <Coin coin={this.state.coins[this.parseUrl()]} updateCoin={this.updateCoin} simplecoinFactory={simplecoinFactory} account={this.state.network.defaultAccount} setUrl={this.setUrl}/>
-                : <Coins coins={this.state.coins} setUrl={this.setUrl}/>
+                ? <Coin coin={this.state.coins[this.parseUrl()]}
+                        account={this.state.network.defaultAccount}
+                        feedPrices={this.state.feedPrices}
+                        simplecoinFactory={simplecoinFactory}
+                        feedbase={feedbase}
+                        updateCoin={this.updateCoin}
+                        updateFeedPrices={this.updateFeedPrices}
+                        setUrl={this.setUrl}/>
+                : <Coins coins={this.state.coins}
+                         setUrl={this.setUrl}/>
           }
         </div>
       </div>
