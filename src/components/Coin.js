@@ -45,7 +45,7 @@ class Coin extends Component {
   updateHistory(result) {
     const transactions = [];
     for(let i=0; i<result.length; i++) {
-      transactions.push({type: 'transaction', from: result[i].args.from,  to: result[i].args.to,  value: result[i].args.value})
+      transactions.push({type: 'transfer', from: result[i].args.from,  to: result[i].args.to,  value: result[i].args.value})
     }
     let history = {...this.state.history};
     if(history.length > 0) {
