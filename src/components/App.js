@@ -6,7 +6,6 @@ import NavBar from './NavBar';
 import Accounts from './Accounts';
 import NoEthereum from './NoEthereum';
 import simplecoinFactory from '../../simplecoin/build/js_module';
-import feedbase from '../../node_modules/feedbase/build/js_module';
 import logo from '../logo.svg';
 import './App.css';
 
@@ -82,7 +81,7 @@ class App extends Component {
             coinId: result,
             owner: null,
             rules: null,
-            feed: null,
+            feedbase: null,
             spread: null,
             balanceOf: null,
             totalSupply: null,
@@ -103,19 +102,20 @@ class App extends Component {
     this.setState({ coins: coins });
   }
 
-  updateFeedPrices(index, value) {
+  updateFeedPrices(feedbaseToken, id, value) {
     const feedPrices = {...this.state.feedPrices};
-    feedPrices[index] = value;
+    if(typeof(feedPrices[feedbaseToken]) === 'undefined') {
+      feedPrices[feedbaseToken] = {};
+    }
+    feedPrices[feedbaseToken][id] = value;
     this.setState({ feedPrices: feedPrices });
   }
 
   initContracts() {
     // Testing purpose
     window.simplecoinFactory = simplecoinFactory;
-    window.feedbase = feedbase;
     //
     simplecoinFactory.class(web3, this.state.network.network);
-    feedbase.class(web3, this.state.network.network);
     
     simplecoinFactory.objects.factory.count((e, r) => {
       const promises = [];
@@ -259,8 +259,8 @@ class App extends Component {
                 ? <Coin coin={this.state.coins[this.parseUrl()]}
                         account={this.state.network.defaultAccount}
                         feedPrices={this.state.feedPrices}
+                        network={this.state.network.network}
                         simplecoinFactory={simplecoinFactory}
-                        feedbase={feedbase}
                         updateCoin={this.updateCoin}
                         updateFeedPrices={this.updateFeedPrices}
                         setUrl={this.setUrl}/>

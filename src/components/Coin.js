@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import feedbase from '../../node_modules/feedbase/build/js_module';
 import web3 from '../web3';
 import './Coin.css';
 
@@ -9,23 +10,26 @@ class Coin extends Component {
 
     this.getValueFromContract = this.getValueFromContract.bind(this);
     this.updateCoinValue = this.updateCoinValue.bind(this);
+    this.updateCoinBalance = this.updateCoinBalance.bind(this);
+    this.updateFeedbaseAndCollateral = this.updateFeedbaseAndCollateral.bind(this);
     this.getBalanceOfCollateral = this.getBalanceOfCollateral.bind(this);
     this.getBalanceOfCoin = this.getBalanceOfCoin.bind(this);
     this.getFeedPrice = this.getFeedPrice.bind(this);
 
     //Testing purpose
     window.simplecoin = this.simplecoin;
+    window.feedbase = feedbase;
     //
   }
 
   componentDidMount() {
-    this.updateCoinValue('feedbase');
     this.updateCoinValue('owner');
     this.updateCoinValue('rules');
     this.updateCoinValue('totalSupply');
     this.updateCoinBalance();
-    
-    this.updateCoinCollateral();
+    this.updateFeedbaseAndCollateral('feedbase');
+
+    //TokenAuction.objects.auction.NewAuction({ }, { fromBlock: 0 }).get((error, result) => {
   }
 
   getValueFromContract(field, param) {
@@ -50,6 +54,15 @@ class Coin extends Component {
   updateCoinBalance() {
     this.getBalanceOfCoin().then((result) => {
       this.props.updateCoin(this.props.coin.coinId, 'balanceOf', result);
+    });
+  }
+
+  updateFeedbaseAndCollateral() {
+    this.getValueFromContract('feedbase').then((result) => {
+      this.props.updateCoin(this.props.coin.coinId, 'feedbase', result);
+      feedbase.environments[this.props.network].objects.feedbase['address'] = this.props.coin.feedbase;
+      feedbase.class(web3, this.props.network);
+      this.updateCoinCollateral();
     });
   }
 
@@ -106,7 +119,7 @@ class Coin extends Component {
 
         for(let i=0; i<feedIds.length; i++) {
           this.getFeedPrice(feedIds[i]).then((result) => {
-            this.props.updateFeedPrices(feedIds[i], web3.toBigNumber(result[0]));
+            this.props.updateFeedPrices(this.props.coin.feedbase, feedIds[i], web3.toBigNumber(result[0]));
           });
         }
       });
@@ -148,7 +161,7 @@ class Coin extends Component {
 
   getFeedPrice(feedId) {
     const p = new Promise((resolve, reject) => {
-      this.props.feedbase.objects.feedbase.get.call(feedId, (error, result) => {
+      feedbase.objects.feedbase.get.call(feedId, (error, result) => {
         if (!error) {
           resolve(result);
         } else {
@@ -161,8 +174,8 @@ class Coin extends Component {
 
   renderCollateralType(key, row) {
     let feedPrice = '';
-    if(row['feed'].toNumber() && this.props.feedPrices[row['feed'].toNumber()]) {
-      feedPrice = web3.fromWei(this.props.feedPrices[row['feed'].toNumber()].toNumber());
+    if(row['feed'].toNumber() && typeof(this.props.feedPrices[this.props.coin.feedbase][row['feed']]) !== 'undefined' && this.props.feedPrices[this.props.coin.feedbase][row['feed'].toNumber()]) {
+      feedPrice = web3.fromWei(this.props.feedPrices[this.props.coin.feedbase][row['feed'].toNumber()].toNumber());
     }
     return(
       <tr key={key}>
@@ -190,13 +203,14 @@ class Coin extends Component {
     const  balanceOf = this.props.coin.balanceOf !== null ? web3.fromWei(this.props.coin.balanceOf.toNumber()) : null;
     return (
       <div>
-        <p>Coin: {this.props.coin.coinId}</p>
-        <p>Feedbase: {this.props.coin.feedbase}</p>
-        <p>Owner: {this.props.coin.owner}</p>
-        <p>Rules: {rules}</p>
-        <p>Total Supply: {totalSupply}</p>
-        <p>Your balance: {balanceOf}</p>
-        <p>Collateral types: {this.props.coin.types.length}</p>
+        <h2>Coin {this.props.coin.coinId}</h2>
+        <p><strong>Owner:</strong> {this.props.coin.owner}</p>
+        <p><strong>Rules:</strong> {rules}</p>
+        <p><strong>Feedbase:</strong> {this.props.coin.feedbase}</p>       
+        <p><strong>Total Supply:</strong> {totalSupply}</p>
+        <p><strong>Your balance:</strong> {balanceOf}</p>
+        <p><a href="#" onClick={(e) => this.props.setUrl('') }>Back</a></p>
+        <h3>Collateral types: {this.props.coin.types.length}</h3>
         <table>
           <thead>
             <tr>
@@ -215,7 +229,7 @@ class Coin extends Component {
             { collateralTypes }
           </tbody>
         </table>
-        <p><a href="#" onClick={(e) => this.props.setUrl('') }>Back</a></p>
+        <h3>History</h3>
       </div>
     );
   }
