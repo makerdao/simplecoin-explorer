@@ -101,7 +101,7 @@ class Coin extends Component {
           }
           types[indexes[i]['collateralId']][indexes[i]['key']] = resultProm[i];
           
-          if(indexes[i]['key'] == 'feed' && feedIds.indexOf(resultProm[i].toNumber()) === -1) {
+          if(indexes[i]['key'] === 'feed' && feedIds.indexOf(resultProm[i].toNumber()) === -1) {
             feedIds.push(resultProm[i].toNumber());
           }
         }
@@ -174,7 +174,10 @@ class Coin extends Component {
 
   renderCollateralType(key, row) {
     let feedPrice = '';
-    if(row['feed'].toNumber() && typeof(this.props.feedPrices[this.props.coin.feedbase][row['feed']]) !== 'undefined' && this.props.feedPrices[this.props.coin.feedbase][row['feed'].toNumber()]) {
+    if(row['feed'].toNumber()
+        && typeof(this.props.feedPrices[this.props.coin.feedbase]) !== 'undefined'
+        && typeof(this.props.feedPrices[this.props.coin.feedbase][row['feed']]) !== 'undefined'
+        && this.props.feedPrices[this.props.coin.feedbase][row['feed'].toNumber()]) {
       feedPrice = web3.fromWei(this.props.feedPrices[this.props.coin.feedbase][row['feed'].toNumber()].toNumber());
     }
     return(
