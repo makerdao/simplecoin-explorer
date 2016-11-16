@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import feedbase from '../../node_modules/feedbase/build/js_module';
+import feedbase from '../../simplecoin/vendor/feedbase-0.9';
 import web3 from '../web3';
 import './Coin.css';
 
@@ -84,7 +84,7 @@ class Coin extends Component {
   updateFeedbaseAndCollateral() {
     this.getValueFromContract('feedbase').then((result) => {
       this.props.updateCoin(this.props.coin.coinId, 'feedbase', result);
-      feedbase.environments[this.props.network].objects.feedbase['address'] = this.props.coin.feedbase;
+      feedbase.environments[this.props.network].feedbase['value'] = this.props.coin.feedbase;
       feedbase.class(web3, this.props.network);
       this.updateCoinCollateral();
     });
