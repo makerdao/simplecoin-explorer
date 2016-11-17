@@ -13,6 +13,7 @@ class Coin extends Component {
     this.updateCoinValue = this.updateCoinValue.bind(this);
     this.updateCoinBalance = this.updateCoinBalance.bind(this);
     this.updateFeedbaseAndCollateral = this.updateFeedbaseAndCollateral.bind(this);
+    this.getBlock = this.getBlock.bind(this);
     this.getBalanceOfCollateral = this.getBalanceOfCollateral.bind(this);
     this.getBalanceOfCoin = this.getBalanceOfCoin.bind(this);
     this.getFeedPrice = this.getFeedPrice.bind(this);
@@ -43,18 +44,42 @@ class Coin extends Component {
     });
   }
 
+  getBlock(blockNumber) {
+    const p = new Promise((resolve, reject) => {
+      web3.eth.getBlock(blockNumber, (error, result) => {
+        if (!error) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      });
+    });
+    return p;
+  }
+
   updateHistory(result) {
     const transactions = [];
+    const promises = [];
     for(let i=0; i<result.length; i++) {
-      transactions.push({type: 'transfer', from: result[i].args.from,  to: result[i].args.to,  value: result[i].args.value})
+      promises.push(this.getBlock(result[i].blockNumber));
     }
-    let history = {...this.state.history};
-    if(history.length > 0) {
-      history = history.concat(transactions);
-    } else {
-      history = transactions;
-    }
-    this.setState({ history: history });
+
+    Promise.all(promises).then((resultProm) => {
+      console.log(resultProm);
+      for(let i=0; i<result.length; i++) {
+        transactions.push({timestamp: resultProm[i].timestamp, type: 'transfer', from: result[i].args.from,  to: result[i].args.to,  value: result[i].args.value});
+      }
+
+      let history = {...this.state.history};
+      if(history.length > 0) {
+        history = history.concat(transactions);
+      } else {
+        history = transactions;
+      }
+      this.setState({ history: history });
+    });
+    
+    
   }
 
   getValueFromContract(field, param) {
@@ -223,6 +248,7 @@ class Coin extends Component {
   renderHistory(key, row) {
     return(
       <tr key={key}>
+        <td>{row['timestamp']}</td>
         <td>{row['type']}</td>
         <td>{row['from']}</td>
         <td>{row['to']}</td>
@@ -277,6 +303,7 @@ class Coin extends Component {
         <table>
           <thead>
             <tr>
+              <th>Date</th>
               <th>Type</th>
               <th>From</th>
               <th>To</th>
