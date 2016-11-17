@@ -1,4 +1,5 @@
 import React from 'react';
+import EthereumAddress from './EthereumAddress';
 import './Coins.css';
 
 const Coins = (props) => {
@@ -8,7 +9,7 @@ const Coins = (props) => {
         <p>Coins: {Object.keys(props.coins).length}</p>
       </div>
       {
-        Object.keys(props.coins).map(key => 
+        Object.keys(props.coins).map(key =>
           <div className="col-sm-6 Coins-box" key={key}>
             <a href={`#${props.coins[key]['coinId']}`} onClick={(e) => props.setUrl(props.coins[key]['coinId']) }>
               <div className="panel panel-default">
@@ -17,7 +18,7 @@ const Coins = (props) => {
                 </div>
                 <div className="panel-body">
                   <p>
-                    {props.coins[key]['coinId']}
+                    <EthereumAddress address={props.coins[key]['coinId']} />
                   </p>
                   <p>
                     Owner: {props.coins[key].owner || '(Pending...)'}

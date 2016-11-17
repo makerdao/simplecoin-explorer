@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import EthereumAddress from './EthereumAddress';
 import feedbase from '../../simplecoin/vendor/feedbase-0.9';
 import web3 from '../web3';
 import './Coin.css';
@@ -38,7 +39,7 @@ class Coin extends Component {
     this.simplecoin.Transfer({ }, { fromBlock: 0 }).get((error, result) => {
       if(!error) {
         this.updateHistory(result);
-      }  
+      }
     });
   }
 
@@ -104,7 +105,7 @@ class Coin extends Component {
 
       const promises = [];
       const indexes = [];
-      
+
       for(let collateralId=0; collateralId<typesCount; collateralId++) {
         Object.keys(collateralType).map(key => {
           if(key !== 'balanceOf') {
@@ -112,7 +113,7 @@ class Coin extends Component {
             indexes.push({key, collateralId});
           }
           return true;
-        }); 
+        });
       }
 
       Promise.all(promises).then((resultProm) => {
@@ -124,7 +125,7 @@ class Coin extends Component {
             types[indexes[i]['collateralId']] = {...collateralType};
           }
           types[indexes[i]['collateralId']][indexes[i]['key']] = resultProm[i];
-          
+
           if(indexes[i]['key'] === 'feed' && feedIds.indexOf(resultProm[i].toNumber()) === -1) {
             feedIds.push(resultProm[i].toNumber());
           }
@@ -229,7 +230,7 @@ class Coin extends Component {
       </tr>
     )
   }
-  
+
   render() {
     const collateralTypes = [];
     for (let i=0; i<this.props.coin.types.length; i++) {
@@ -240,16 +241,16 @@ class Coin extends Component {
     for (let i=0; i<this.state.history.length; i++) {
       history.push(this.renderHistory(i, this.state.history[i]));
     }
-    
+
     const  rules = typeof(this.props.coin.rules) === 'string' ? web3.toAscii(this.props.coin.rules) : this.props.coin.rules;
     const  totalSupply = this.props.coin.totalSupply !== null ? web3.fromWei(this.props.coin.totalSupply.toNumber()) : null;
     const  balanceOf = this.props.coin.balanceOf !== null ? web3.fromWei(this.props.coin.balanceOf.toNumber()) : null;
     return (
       <div>
-        <h2>Coin {this.props.coin.coinId}</h2>
-        <p><strong>Owner:</strong> {this.props.coin.owner}</p>
+        <h2>Coin <EthereumAddress address={this.props.coin.coinId} /></h2>
+        <p><strong>Owner:</strong> <EthereumAddress address={this.props.coin.owner} /></p>
         <p><strong>Rules:</strong> {rules}</p>
-        <p><strong>Feedbase:</strong> {this.props.coin.feedbase}</p>       
+        <p><strong>Feedbase:</strong> <EthereumAddress address={this.props.coin.feedbase} /></p>
         <p><strong>Total Supply:</strong> {totalSupply}</p>
         <p><strong>Your balance:</strong> {balanceOf}</p>
         <p><a href="#" onClick={(e) => this.props.setUrl('') }>Back</a></p>
