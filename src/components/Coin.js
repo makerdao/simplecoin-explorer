@@ -78,8 +78,8 @@ class Coin extends Component {
       }
       this.setState({ history: history });
     });
-    
-    
+
+
   }
 
   getValueFromContract(field, param) {
@@ -273,7 +273,7 @@ class Coin extends Component {
     const  balanceOf = this.props.coin.balanceOf !== null ? web3.fromWei(this.props.coin.balanceOf.toNumber()) : null;
     return (
       <div>
-        <h2>Coin <EthereumAddress address={this.props.coin.coinId} /></h2>
+        <h2>Coin <EthereumAddress address={this.props.coin.coinId} short={true} /></h2>
         <p><strong>Owner:</strong> <EthereumAddress address={this.props.coin.owner} /></p>
         <p><strong>Rules:</strong> {rules}</p>
         <p><strong>Feedbase:</strong> <EthereumAddress address={this.props.coin.feedbase} /></p>
