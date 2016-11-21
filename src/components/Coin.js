@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import EthereumAddress from './EthereumAddress';
 import feedbase from '../../simplecoin/vendor/feedbase-0.9';
 import web3 from '../web3';
-import './Coin.css';
 
 class Coin extends Component {
   constructor(props) {
@@ -233,8 +232,8 @@ class Coin extends Component {
     return(
       <tr key={key}>
         <td>{key}{Number(row['token']) ? '' : ' (cancelled)'}</td>
-        <td>{row['token']}</td>
-        <td>{row['vault']}</td>
+        <td><EthereumAddress address={row['token']} short={true} /></td>
+        <td><EthereumAddress address={row['vault']} short={true} /></td>
         <td>{row['feed'].toNumber()}</td>
         <td>{feedPrice}</td>
         <td>{row['spread'].toNumber()}</td>
@@ -250,8 +249,8 @@ class Coin extends Component {
       <tr key={key}>
         <td>{row['timestamp']}</td>
         <td>{row['type']}</td>
-        <td>{row['from']}</td>
-        <td>{row['to']}</td>
+        <td><EthereumAddress address={row['from']} /></td>
+        <td><EthereumAddress address={row['to']} /></td>
         <td>{web3.fromWei(row['value'].toNumber())}</td>
       </tr>
     )
@@ -272,48 +271,110 @@ class Coin extends Component {
     const  totalSupply = this.props.coin.totalSupply !== null ? web3.fromWei(this.props.coin.totalSupply.toNumber()) : null;
     const  balanceOf = this.props.coin.balanceOf !== null ? web3.fromWei(this.props.coin.balanceOf.toNumber()) : null;
     return (
-      <div>
-        <h2>Coin <EthereumAddress address={this.props.coin.coinId} short={true} /></h2>
-        <p><strong>Owner:</strong> <EthereumAddress address={this.props.coin.owner} /></p>
-        <p><strong>Rules:</strong> {rules}</p>
-        <p><strong>Feedbase:</strong> <EthereumAddress address={this.props.coin.feedbase} /></p>
-        <p><strong>Total Supply:</strong> {totalSupply}</p>
-        <p><strong>Your balance:</strong> {balanceOf}</p>
-        <p><a href="#" onClick={(e) => this.props.setUrl('') }>Back</a></p>
-        <h3>Collateral types: {this.props.coin.types.length}</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Token</th>
-              <th>Vault</th>
-              <th>Price Feed Id</th>
-              <th>Price</th>
-              <th>Spread</th>
-              <th>Debt Ceiling</th>
-              <th>Debt</th>
-              <th>Your balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            { collateralTypes }
-          </tbody>
-        </table>
-        <h3>History</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Type</th>
-              <th>From</th>
-              <th>To</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            { history }
-          </tbody>
-        </table>
+      <div className="row">
+        <div className="col-md-6">
+          <p><strong>Coin: </strong><EthereumAddress address={this.props.coin.coinId} /></p>
+          <p><strong>Owner: </strong><EthereumAddress address={this.props.coin.owner} /></p>
+        </div>
+        <div className="col-md-6">
+          <p><strong>Rules: </strong>{rules}</p>
+          <p><strong>Price Supplier (Feedbase): </strong><EthereumAddress address={this.props.coin.feedbase} /></p>
+        </div>
+        <div className="col-md-6 text-center">
+          <div className="panel panel-default">
+            <div className="panel-heading">
+              <h3 className="panel-title">Total Supply</h3>
+            </div>
+            <div className="panel-body"><span>{totalSupply}</span></div>
+          </div>
+        </div>
+        <div className="col-md-6 text-center">
+          <div className="panel panel-default">
+            <div className="panel-heading">
+              <h3 className="panel-title">Your Balance</h3>
+            </div>
+            <div className="panel-body"><span>{balanceOf}</span></div>
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="well">
+            <h2>Transfer</h2>
+            <form className="form-horizontal">
+              <div className="form-group">
+                <div className="col-sm-4">
+                  <label className="control-label" htmlFor="recipient">Recipient </label>
+                </div>
+                <div className="col-sm-8">
+                  <input className="form-control" type="text" required placeholder="0x6F2A8Ee9452ba7d336b3fba03caC27f7818AeAD6" id="recipient" />
+                </div>
+              </div>
+              <div className="form-group">
+                <div className="col-sm-4">
+                  <label className="control-label" htmlFor="amount">Amount </label>
+                </div>
+                <div className="col-sm-8">
+                  <input className="form-control text-right" type="number" required placeholder="0.00" id="amount" />
+                </div>
+              </div>
+              <div className="form-group">
+                <div className="col-sm-8 col-sm-offset-4" id="transfer-column">
+                  <button className="btn btn-default btn-lg" type="submit">Transfer </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div className="col-md-6"></div>
+        <div className="col-md-12">
+          <h2>Collaterals ({this.props.coin.types.length})</h2>
+        </div>
+        <div className="col-md-5">
+          <div className="thumbnail"><img src="assets/img/meta-chart.svg" alt="Collaterals" />
+            <div className="caption">
+              <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget
+                quam. Donec id elit non mi porta gravida at eget metus.</p>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-7">
+          <div className="table-responsive">
+            <table className="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Token </th>
+                  <th>Vault </th>
+                  <th>Price Feed</th>
+                  <th>Spread </th>
+                  <th>Debt Ceiling</th>
+                  <th>Debt </th>
+                  <th>Your Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                { collateralTypes }
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="col-md-12">
+          <h2>Transactions </h2>
+          <div className="table-responsive">
+            <table className="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Date </th>
+                  <th>Type </th>
+                  <th>Sender </th>
+                  <th>Receiver </th>
+                  <th>Amount </th>
+                </tr>
+              </thead>
+              <tbody>
+                { history }
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     );
   }

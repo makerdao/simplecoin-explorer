@@ -1,20 +1,17 @@
 import React from 'react';
-import './NavBar.css';
 import logo from '../logo.svg';
 
 const NavBar = (props) => {
   const text = props.isConnected ? `${props.network}` : 'No connection';
   const dotColor = props.isConnected ? (props.syncing ? 'yellow' : 'green') : 'red';
   return (
-    <nav className="navbar navbar-inverse NavBar">
+    <nav className="navbar navbar-default">
       <div className="container">
-          <a className="navbar-brand" href="#" onClick={(e) => props.setUrl('')}>
-            <img className="NavBar-logo" alt="Brand" src={logo} />
-          </a>
-        <p className="navbar-text">
-          <span className={`glyphicon glyphicon-one-fine-${dotColor}-dot`}></span>
-          <strong>{text}</strong>
-        </p>
+        <div className="navbar-header">
+          <a className="navbar-brand navbar-link" href="#" onClick={(e) => props.setUrl('')}><img src={logo} alt="Maker Logo" width="30" /></a>
+          <button className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span className="sr-only">Toggle navigation</span><span className="icon-bar"></span><span className="icon-bar"></span><span className="icon-bar"></span></button>
+        </div>
+        <div className="collapse navbar-collapse" id="navcol-1"></div>
       </div>
     </nav>
   )

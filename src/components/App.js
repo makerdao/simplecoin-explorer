@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import web3 from '../web3';
+import Footer from './Footer';
 import Coins from './Coins';
 import Coin from './Coin';
 import NavBar from './NavBar';
 import Accounts from './Accounts';
 import NoEthereum from './NoEthereum';
 import simplecoinFactory from '../../simplecoin/build/js_module';
-import './App.css';
 
 class App extends Component {
   constructor() {
@@ -84,7 +84,7 @@ class App extends Component {
             spread: null,
             balanceOf: null,
             totalSupply: null,
-            types: []   
+            types: []
           };
           resolve(coin);
         } else {
@@ -115,7 +115,7 @@ class App extends Component {
     window.simplecoinFactory = simplecoinFactory;
     //
     simplecoinFactory.class(web3, this.state.network.network);
-    
+
     simplecoinFactory.objects.factory.count((e, r) => {
       const promises = [];
       for (let i=0; i<r; i++) {
@@ -251,37 +251,32 @@ class App extends Component {
 
   renderContent() {
     return (
-      <div className="row">
-        <div className="col-md-12">
-          {
-          (this.parseUrl() !== null)
-                ? <Coin coin={this.state.coins[this.parseUrl()]}
-                        account={this.state.network.defaultAccount}
-                        feedPrices={this.state.feedPrices}
-                        network={this.state.network.network}
-                        simplecoinFactory={simplecoinFactory}
-                        updateCoin={this.updateCoin}
-                        updateFeedPrices={this.updateFeedPrices}
-                        setUrl={this.setUrl}/>
-                : <Coins coins={this.state.coins}
-                         setUrl={this.setUrl}/>
-          }
-        </div>
-      </div>
+      (this.parseUrl() !== null)
+            ? <Coin coin={this.state.coins[this.parseUrl()]}
+                    account={this.state.network.defaultAccount}
+                    feedPrices={this.state.feedPrices}
+                    network={this.state.network.network}
+                    simplecoinFactory={simplecoinFactory}
+                    updateCoin={this.updateCoin}
+                    updateFeedPrices={this.updateFeedPrices}
+                    setUrl={this.setUrl}/>
+            : <Coins coins={this.state.coins}
+                      setUrl={this.setUrl}/>
     )
   }
 
   render() {
     return (
       <div className="App">
-        <NavBar {...this.state.network} setUrl={this.setUrl}/>
-        <Accounts changeAccount={this.changeAccount} />
+        <NavBar {...this.state.network} setUrl={this.setUrl} />
         <div className="container">
+          <Accounts changeAccount={this.changeAccount} />
           {
-            this.state.network.isConnected ? this.renderContent() : this.renderNoWeb3() 
+            this.state.network.isConnected ? this.renderContent() : this.renderNoWeb3()
           }
         </div>
-      </div>     
+        <Footer />
+      </div>
     );
   }
 }
