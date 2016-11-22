@@ -2,11 +2,13 @@ import React from 'react';
 import web3 from '../web3';
 
 const Accounts = (props) => {
+  const text = props.isConnected ? `${props.network}` : 'No connection';
+  //const dotColor = props.isConnected ? (props.syncing ? 'yellow' : 'green') : 'red';
   return (
     <div className="row">
       <div className="col-md-6">
         <p><strong>Network Status</strong></p>
-        <p><i className="icon ion-checkmark-circled text-success"></i> Connected: <strong>ROPSTEN</strong></p>
+        <p><i className="icon ion-checkmark-circled text-success"></i> Connected: <strong>{text}</strong></p>
       </div>
       <div className="col-md-6">
         <form className="form-horizontal">

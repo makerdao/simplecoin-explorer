@@ -179,6 +179,9 @@ class App extends Component {
                 case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
                   network = 'morden';
                   break;
+                case '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d':
+                  network = 'ropsten';
+                  break;
                 case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
                   network = 'live';
                   break;
@@ -268,9 +271,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <NavBar {...this.state.network} setUrl={this.setUrl} />
+        <NavBar setUrl={this.setUrl} />
         <div className="container">
-          <Accounts changeAccount={this.changeAccount} />
+          <Accounts {...this.state.network} changeAccount={this.changeAccount} />
           {
             this.state.network.isConnected ? this.renderContent() : this.renderNoWeb3()
           }

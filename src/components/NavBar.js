@@ -2,8 +2,6 @@ import React from 'react';
 import logo from '../logo.svg';
 
 const NavBar = (props) => {
-  const text = props.isConnected ? `${props.network}` : 'No connection';
-  const dotColor = props.isConnected ? (props.syncing ? 'yellow' : 'green') : 'red';
   return (
     <nav className="navbar navbar-default">
       <div className="container">
