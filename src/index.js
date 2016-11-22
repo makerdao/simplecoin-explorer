@@ -8,6 +8,8 @@ import '../design/assets/js/jquery.min';
 window.jQuery = window.$ =  require('../design/assets/js/jquery.min');
 require('../design/assets/bootstrap/js/bootstrap.min');
 
+import './tokens';
+
 ReactDOM.render(
   <App />,
   document.getElementById('root')

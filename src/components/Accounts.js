@@ -6,11 +6,11 @@ const Accounts = (props) => {
   //const dotColor = props.isConnected ? (props.syncing ? 'yellow' : 'green') : 'red';
   return (
     <div className="row">
-      <div className="col-md-6">
+      <div className="col-sm-4">
         <p><strong>Network Status</strong></p>
         <p><i className="icon ion-checkmark-circled text-success"></i> Connected: <strong>{text}</strong></p>
       </div>
-      <div className="col-md-6">
+      <div className="col-sm-8">
         <form className="form-horizontal">
           <div className="form-group">
             <div className="col-sm-3">
@@ -27,12 +27,12 @@ const Accounts = (props) => {
               <label className="control-label">Contract </label>
             </div>
             <div className="col-sm-9">
-              <p className="form-control-static">0xa33f1ca6d2d2f230f8aec1e8f15a8a77e8e83256 </p>
+              <p className="form-control-static">0xa33f1ca6d2d2f230f8aec1e8f15a8a77e8e83256</p>
             </div>
           </div>
         </form>
       </div>
-      <div className="col-md-12">
+      <div className="col-sm-12">
         <div className="alert alert-success text-left" role="alert">
           <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><span><strong>Alert</strong> text.</span></div>
       </div>

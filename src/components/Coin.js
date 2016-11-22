@@ -66,7 +66,6 @@ class Coin extends Component {
     }
 
     Promise.all(promises).then((resultProm) => {
-      console.log(resultProm);
       for(let i=0; i<result.length; i++) {
         transactions.push({timestamp: resultProm[i].timestamp, type: 'transfer', from: result[i].args.from,  to: result[i].args.to,  value: result[i].args.value});
       }
@@ -333,11 +332,11 @@ class Coin extends Component {
         <div className="col-md-12">
           <h2>Collaterals ({this.props.coin.types.length})</h2>
         </div>
-        <div className="col-md-5">
+        <div className="col-md-4">
           <div className="thumbnail text-center">
             <PieChart
               data={pieData}
-              width={400}
+              width={300}
               height={300}
               radius={110}
               innerRadius={20}
@@ -348,17 +347,19 @@ class Coin extends Component {
             </div>
           </div>
         </div>
-        <div className="col-md-7">
+        <div className="col-md-8">
           <div className="table-responsive">
             <table className="table table-striped table-hover">
               <thead>
                 <tr>
-                  <th>Token </th>
-                  <th>Vault </th>
+                  <th></th>
+                  <th>Token</th>
+                  <th>Vault</th>
                   <th>Price Feed</th>
-                  <th>Spread </th>
+                  <th>Price</th>
+                  <th>Spread</th>
                   <th>Debt Ceiling</th>
-                  <th>Debt </th>
+                  <th>Debt</th>
                   <th>Your Balance</th>
                 </tr>
               </thead>
