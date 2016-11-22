@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import rd3 from 'rd3';
 import EthereumAddress from './EthereumAddress';
 import feedbase from '../../simplecoin/vendor/feedbase-0.9';
 import web3 from '../web3';
+import './Coin.css';
 
 class Coin extends Component {
   constructor(props) {
@@ -257,9 +259,12 @@ class Coin extends Component {
   }
 
   render() {
+    const PieChart = rd3.PieChart;
+    const pieData = [];
     const collateralTypes = [];
     for (let i=0; i<this.props.coin.types.length; i++) {
       collateralTypes.push(this.renderCollateralType(i, this.props.coin.types[i]));
+      pieData.push({label: this.props.coin.types[i].token, value: 100 / this.props.coin.types.length});
     }
 
     const history = [];
@@ -329,10 +334,17 @@ class Coin extends Component {
           <h2>Collaterals ({this.props.coin.types.length})</h2>
         </div>
         <div className="col-md-5">
-          <div className="thumbnail"><img src="assets/img/meta-chart.svg" alt="Collaterals" />
+          <div className="thumbnail text-center">
+            <PieChart
+              data={pieData}
+              width={400}
+              height={300}
+              radius={110}
+              innerRadius={20}
+              sectorBorderColor="white"
+            />
             <div className="caption">
-              <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget
-                quam. Donec id elit non mi porta gravida at eget metus.</p>
+              <p>(Still needs to calculate percentages)</p>
             </div>
           </div>
         </div>

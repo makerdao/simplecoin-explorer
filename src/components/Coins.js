@@ -18,7 +18,7 @@ const Coins = (props) => {
             <tbody>
               {
                 Object.keys(props.coins).map(key =>
-                  <tr key={key}>
+                  <tr key={key} onClick={(e) => props.setUrl(props.coins[key]['coinId'])}>
                     <td>
                       <a href={`#${props.coins[key]['coinId']}`} onClick={(e) => props.setUrl(props.coins[key]['coinId'])}>
                         Go to Coin
