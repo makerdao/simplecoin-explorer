@@ -40,7 +40,19 @@ class Coin extends Component {
 
     this.simplecoin.Transfer({ }, { fromBlock: 0 }).get((error, result) => {
       if(!error) {
-        this.updateHistory(result);
+        this.updateHistory(result, 'transfer');
+      }
+    });
+
+    this.simplecoin.LogIssue({ }, { fromBlock: 0 }).get((error, result) => {
+      if(!error) {
+        this.updateHistory(result, 'issue');
+      }
+    });
+
+    this.simplecoin.LogCover({ }, { fromBlock: 0 }).get((error, result) => {
+      if(!error) {
+        this.updateHistory(result, 'cover');
       }
     });
   }
@@ -58,28 +70,40 @@ class Coin extends Component {
     return p;
   }
 
-  updateHistory(result) {
+  updateHistory(result, type) {
     const transactions = [];
     const promises = [];
-    for(let i=0; i<result.length; i++) {
+    for (let i=0; i<result.length; i++) {
       promises.push(this.getBlock(result[i].blockNumber));
     }
 
     Promise.all(promises).then((resultProm) => {
-      for(let i=0; i<result.length; i++) {
-        transactions.push({timestamp: resultProm[i].timestamp, type: 'transfer', from: result[i].args.from,  to: result[i].args.to,  value: result[i].args.value});
+      let from = null;
+      let to = null;
+      let value = null;
+      for (let i=0; i<result.length; i++) {
+
+        if (type === 'transfer') {
+          from = result[i].args.from;
+          to = result[i].args.to;
+          value = result[i].args.value;
+        } else {
+          from = result[i].args.from;
+          to = '-';
+          value = result[i].args.stablecoin_quantity;
+        }
+
+        transactions.push({ timestamp: resultProm[i].timestamp, type, from,  to,  value });
       }
 
-      let history = {...this.state.history};
-      if(history.length > 0) {
-        history = history.concat(transactions);
-      } else {
-        history = transactions;
-      }
+      let history = this.state.history.concat(transactions);
+      history.sort((a, b) => {
+        if(a.timestamp < b.timestamp) return 1;
+        if(a.timestamp > b.timestamp) return -1;
+        return 0;
+      });
       this.setState({ history: history });
     });
-
-
   }
 
   getValueFromContract(field, param) {
