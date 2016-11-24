@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import rd3 from 'rd3';
 import EthereumAddress from './EthereumAddress';
+import TokenValue from './TokenValue';
 import feedbase from '../../simplecoin/vendor/feedbase-0.9';
 import web3 from '../web3';
+import { addressToToken } from '../util/functions';
 import './Coin.css';
+
 
 class Coin extends Component {
   constructor(props) {
@@ -252,7 +255,7 @@ class Coin extends Component {
         && typeof(this.props.feedPrices[this.props.coin.feedbase]) !== 'undefined'
         && typeof(this.props.feedPrices[this.props.coin.feedbase][row['feed']]) !== 'undefined'
         && this.props.feedPrices[this.props.coin.feedbase][row['feed'].toNumber()]) {
-      feedPrice = web3.fromWei(this.props.feedPrices[this.props.coin.feedbase][row['feed'].toNumber()].toNumber());
+      feedPrice = this.props.feedPrices[this.props.coin.feedbase][row['feed'].toNumber()];
     }
     return(
       <tr key={key}>
@@ -260,11 +263,11 @@ class Coin extends Component {
         <td><EthereumAddress address={row['token']} short={true} /></td>
         <td><EthereumAddress address={row['vault']} short={true} /></td>
         <td>{row['feed'].toNumber()}</td>
-        <td>{feedPrice}</td>
+        <td><TokenValue value={feedPrice} /></td>
         <td>{row['spread'].toNumber()}</td>
-        <td>{web3.fromWei(row['ceiling'].toNumber())}</td>
-        <td>{web3.fromWei(row['debt'].toNumber())}</td>
-        <td>{web3.fromWei(row['balanceOf'].toNumber())}</td>
+        <td><TokenValue value={row['ceiling']} /></td>
+        <td><TokenValue value={row['debt']} /></td>
+        <td><TokenValue value={row['balanceOf']} /></td>
       </tr>
     )
   }
@@ -274,9 +277,9 @@ class Coin extends Component {
       <tr key={key}>
         <td>{row['timestamp']}</td>
         <td>{row['type']}</td>
-        <td><EthereumAddress address={row['from']} /></td>
-        <td><EthereumAddress address={row['to']} /></td>
-        <td>{web3.fromWei(row['value'].toNumber())}</td>
+        <td><EthereumAddress address={row['from']} short={true} /></td>
+        <td><EthereumAddress address={row['to']} short={true} /></td>
+        <td><TokenValue value={row['value']} /></td>
       </tr>
     )
   }
@@ -287,7 +290,7 @@ class Coin extends Component {
     const collateralTypes = [];
     for (let i=0; i<this.props.coin.types.length; i++) {
       collateralTypes.push(this.renderCollateralType(i, this.props.coin.types[i]));
-      pieData.push({label: this.props.coin.types[i].token, value: 100 / this.props.coin.types.length});
+      pieData.push({label: addressToToken(this.props.network, this.props.coin.types[i].token), value: ((this.props.coin.types[i].debt/this.props.coin.totalSupply) * 100).toFixed(2)});
     }
 
     const history = [];
@@ -296,8 +299,8 @@ class Coin extends Component {
     }
 
     const  rules = typeof(this.props.coin.rules) === 'string' ? web3.toAscii(this.props.coin.rules) : this.props.coin.rules;
-    const  totalSupply = this.props.coin.totalSupply !== null ? web3.fromWei(this.props.coin.totalSupply.toNumber()) : null;
-    const  balanceOf = this.props.coin.balanceOf !== null ? web3.fromWei(this.props.coin.balanceOf.toNumber()) : null;
+    const  totalSupply = this.props.coin.totalSupply !== null ? this.props.coin.totalSupply.toNumber() : null;
+    const  balanceOf = this.props.coin.balanceOf !== null ? this.props.coin.balanceOf.toNumber() : null;
     return (
       <div className="row">
         <div className="col-md-6">
@@ -313,7 +316,7 @@ class Coin extends Component {
             <div className="panel-heading">
               <h3 className="panel-title">Total Supply</h3>
             </div>
-            <div className="panel-body"><span>{totalSupply}</span></div>
+            <div className="panel-body"><span><TokenValue value={totalSupply} /></span></div>
           </div>
         </div>
         <div className="col-md-6 text-center">
@@ -321,9 +324,10 @@ class Coin extends Component {
             <div className="panel-heading">
               <h3 className="panel-title">Your Balance</h3>
             </div>
-            <div className="panel-body"><span>{balanceOf}</span></div>
+            <div className="panel-body"><span><TokenValue value={balanceOf} /></span></div>
           </div>
         </div>
+        {/*
         <div className="col-md-6">
           <div className="well">
             <h2>Transfer</h2>
@@ -352,6 +356,7 @@ class Coin extends Component {
             </form>
           </div>
         </div>
+        */}
         <div className="col-md-6"></div>
         <div className="col-md-12">
           <h2>Collaterals ({this.props.coin.types.length})</h2>
@@ -367,7 +372,7 @@ class Coin extends Component {
               sectorBorderColor="white"
             />
             <div className="caption">
-              <p>(Still needs to calculate percentages)</p>
+              <p></p>
             </div>
           </div>
         </div>
@@ -394,7 +399,7 @@ class Coin extends Component {
           </div>
         </div>
         <div className="col-md-12">
-          <h2>Transactions </h2>
+          <h2>Transactions History</h2>
           <div className="table-responsive">
             <table className="table table-striped table-hover">
               <thead>
