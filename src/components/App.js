@@ -79,7 +79,8 @@ class App extends Component {
           const coin = {
             coinId: result,
             owner: null,
-            rules: null,
+            name: null,
+            symbol: null,
             feedbase: null,
             spread: null,
             balanceOf: null,

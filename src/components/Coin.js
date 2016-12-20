@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import rd3 from 'rd3';
 import EthereumAddress from './EthereumAddress';
 import TokenValue from './TokenValue';
-import feedbase from '../../simplecoin/vendor/feedbase-0.9';
+import feedbase from '../../simplecoin/vendor/feedbase-200';
 import web3 from '../web3';
 import { addressToToken } from '../util/functions';
 import './Coin.css';
@@ -36,7 +36,8 @@ class Coin extends Component {
 
   componentDidMount() {
     this.updateCoinValue('owner');
-    this.updateCoinValue('rules');
+    this.updateCoinValue('name');
+    this.updateCoinValue('symbol');
     this.updateCoinValue('totalSupply');
     this.updateCoinBalance();
     this.updateFeedbaseAndCollateral('feedbase');
@@ -178,8 +179,8 @@ class Coin extends Component {
           }
           types[indexes[i]['collateralId']][indexes[i]['key']] = resultProm[i];
 
-          if(indexes[i]['key'] === 'feed' && feedIds.indexOf(resultProm[i].toNumber()) === -1) {
-            feedIds.push(resultProm[i].toNumber());
+          if(indexes[i]['key'] === 'feed' && feedIds.indexOf(resultProm[i]) === -1) {
+            feedIds.push(resultProm[i]);
           }
         }
         const promises2 = [];
@@ -238,7 +239,7 @@ class Coin extends Component {
 
   getFeedPrice(feedId) {
     const p = new Promise((resolve, reject) => {
-      feedbase.objects.feedbase.get.call(feedId, (error, result) => {
+      feedbase.objects.feedbase.tryGet.call(feedId, (error, result) => {
         if (!error) {
           resolve(result);
         } else {
@@ -251,18 +252,18 @@ class Coin extends Component {
 
   renderCollateralType(key, row) {
     let feedPrice = '';
-    if(row['feed'].toNumber()
+    if(row['feed']
         && typeof(this.props.feedPrices[this.props.coin.feedbase]) !== 'undefined'
         && typeof(this.props.feedPrices[this.props.coin.feedbase][row['feed']]) !== 'undefined'
-        && this.props.feedPrices[this.props.coin.feedbase][row['feed'].toNumber()]) {
-      feedPrice = this.props.feedPrices[this.props.coin.feedbase][row['feed'].toNumber()];
+        && this.props.feedPrices[this.props.coin.feedbase][row['feed']]) {
+      feedPrice = this.props.feedPrices[this.props.coin.feedbase][row['feed']];
     }
     return(
       <tr key={key}>
         <td>{key}{Number(row['token']) ? '' : ' (cancelled)'}</td>
         <td><EthereumAddress address={row['token']} short={true} /></td>
         <td><EthereumAddress address={row['vault']} short={true} /></td>
-        <td>{row['feed'].toNumber()}</td>
+        <td>{parseInt(row['feed'])}</td>
         <td><TokenValue value={feedPrice} /></td>
         <td>{row['spread'].toNumber()}</td>
         <td><TokenValue value={row['ceiling']} /></td>
@@ -298,18 +299,21 @@ class Coin extends Component {
       history.push(this.renderHistory(i, this.state.history[i]));
     }
 
-    const  rules = typeof(this.props.coin.rules) === 'string' ? web3.toAscii(this.props.coin.rules) : this.props.coin.rules;
+    const  name = typeof(this.props.coin.name) === 'string' ? web3.toAscii(this.props.coin.name) : this.props.coin.name;
+    const  symbol = typeof(this.props.coin.symbol) === 'string' ? web3.toAscii(this.props.coin.symbol) : this.props.coin.symbol;
     const  totalSupply = this.props.coin.totalSupply !== null ? this.props.coin.totalSupply.toNumber() : null;
     const  balanceOf = this.props.coin.balanceOf !== null ? this.props.coin.balanceOf.toNumber() : null;
     return (
       <div className="row">
         <div className="col-md-6">
-          <p><strong>Coin: </strong><EthereumAddress address={this.props.coin.coinId} /></p>
-          <p><strong>Owner: </strong><EthereumAddress address={this.props.coin.owner} /></p>
+          <p><strong>Name: </strong>{this.props.coin.name}</p>
+          <p><strong>Symbol: </strong>{this.props.coin.symbol}</p>
+          <p><strong>Address: </strong><EthereumAddress address={this.props.coin.coinId} /></p>
         </div>
         <div className="col-md-6">
-          <p><strong>Rules: </strong>{rules}</p>
+          <p><strong>Owner: </strong><EthereumAddress address={this.props.coin.owner} /></p>
           <p><strong>Price Supplier (Feedbase): </strong><EthereumAddress address={this.props.coin.feedbase} /></p>
+          <p> &nbsp; </p>
         </div>
         <div className="col-md-6 text-center">
           <div className="panel panel-default">
