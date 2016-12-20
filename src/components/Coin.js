@@ -263,7 +263,7 @@ class Coin extends Component {
         <td>{key}{Number(row['token']) ? '' : ' (cancelled)'}</td>
         <td><EthereumAddress address={row['token']} short={true} /></td>
         <td><EthereumAddress address={row['vault']} short={true} /></td>
-        <td>{parseInt(row['feed'])}</td>
+        <td>{parseInt(row['feed'], 10)}</td>
         <td><TokenValue value={feedPrice} /></td>
         <td>{row['spread'].toNumber()}</td>
         <td><TokenValue value={row['ceiling']} /></td>
@@ -299,8 +299,6 @@ class Coin extends Component {
       history.push(this.renderHistory(i, this.state.history[i]));
     }
 
-    const  name = typeof(this.props.coin.name) === 'string' ? web3.toAscii(this.props.coin.name) : this.props.coin.name;
-    const  symbol = typeof(this.props.coin.symbol) === 'string' ? web3.toAscii(this.props.coin.symbol) : this.props.coin.symbol;
     const  totalSupply = this.props.coin.totalSupply !== null ? this.props.coin.totalSupply.toNumber() : null;
     const  balanceOf = this.props.coin.balanceOf !== null ? this.props.coin.balanceOf.toNumber() : null;
     return (
