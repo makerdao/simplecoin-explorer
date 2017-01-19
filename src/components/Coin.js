@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import rd3 from 'rd3';
 import EthereumAddress from './EthereumAddress';
 import TokenValue from './TokenValue';
-import feedbase from '../../simplecoin/vendor/feedbase-200';
+import feedbase from '../vendor/feedbase-200';
 import web3 from '../web3';
 import { addressToToken } from '../util/functions';
 import './Coin.css';

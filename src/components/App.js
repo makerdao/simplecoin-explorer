@@ -6,7 +6,7 @@ import Coin from './Coin';
 import NavBar from './NavBar';
 import Accounts from './Accounts';
 import NoEthereum from './NoEthereum';
-import simplecoinFactory from '../../simplecoin/build/js_module';
+import simplecoinFactory from '../vendor/simplecoin';
 
 class App extends Component {
   constructor() {
