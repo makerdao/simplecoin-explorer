@@ -11,9 +11,18 @@ if (typeof web3 === 'undefined' && typeof Web3 === 'undefined') {
 
 dapple['simple-stablecoin'] = (function builder () {
   var environments = {
-      'develop': {},
-      'morden': {},
-      'live': {},
+      'develop': {
+        'factory': {
+          'value': '',
+          'type': 'SimplecoinFactory[]'
+        }
+      },
+      'live': {
+        'factory': {
+          'value': '',
+          'type': 'SimplecoinFactory[]'
+        }
+      },
       'ropsten': {
         'factory': {
           'value': '0x21f8a783399b634e6944d72de30ae370c75c0d06',

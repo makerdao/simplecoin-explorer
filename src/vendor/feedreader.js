@@ -9,8 +9,27 @@ if (typeof web3 === 'undefined' && typeof Web3 === 'undefined') {
   var Web3 = require('web3');
 }
 
-dapple['feed-aggregator'] = (function builder () {
-  var environments = {};
+dapple['feedreader'] = (function builder () {
+  var environments = {
+      'develop':  {
+        'feedreader': {
+          'value': '',
+          'type': 'Feedreader[]'
+        }
+      },
+      'ropsten': {
+        'feedreader': {
+          'value': '',
+          'type': 'Feedreader[]'
+        }
+      },
+      'live': {
+        'feedreader': {
+          'value': '',
+          'type': 'Feedreader[]'
+        }
+      }
+    };
 
   function ContractWrapper (headers, _web3) {
     if (!_web3) {
@@ -60,7 +79,7 @@ dapple['feed-aggregator'] = (function builder () {
     }
 
     this.headers = {
-      'FeedReaderInterface100': {
+      'Feedreader': {
         'interface': [
           {
             'constant': false,
@@ -109,5 +128,5 @@ dapple['feed-aggregator'] = (function builder () {
 })();
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = dapple['feed-aggregator'];
+  module.exports = dapple['feedreader'];
 }

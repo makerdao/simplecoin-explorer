@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import rd3 from 'rd3';
 import EthereumAddress from './EthereumAddress';
 import TokenValue from './TokenValue';
-import feedbase from '../vendor/feedbase-200';
+import feedreader from '../vendor/feedreader';
 import web3 from '../web3';
 import { addressToToken } from '../util/functions';
 import './Coin.css';
@@ -16,7 +16,7 @@ class Coin extends Component {
     this.getValueFromContract = this.getValueFromContract.bind(this);
     this.updateCoinValue = this.updateCoinValue.bind(this);
     this.updateCoinBalance = this.updateCoinBalance.bind(this);
-    this.updateFeedbaseAndCollateral = this.updateFeedbaseAndCollateral.bind(this);
+    this.updateFeedAndCollateral = this.updateFeedAndCollateral.bind(this);
     this.getBlock = this.getBlock.bind(this);
     this.getBalanceOfCollateral = this.getBalanceOfCollateral.bind(this);
     this.getBalanceOfCoin = this.getBalanceOfCoin.bind(this);
@@ -30,7 +30,7 @@ class Coin extends Component {
 
     //Testing purpose
     window.simplecoin = this.simplecoin;
-    window.feedbase = feedbase;
+    window.feedreader = feedreader;
     //
   }
 
@@ -40,7 +40,7 @@ class Coin extends Component {
     this.updateCoinValue('symbol');
     this.updateCoinValue('totalSupply');
     this.updateCoinBalance();
-    this.updateFeedbaseAndCollateral('feedbase');
+    this.updateFeedAndCollateral('feedbase');
 
     this.simplecoin.Transfer({ }, { fromBlock: 0 }).get((error, result) => {
       if(!error) {
@@ -135,11 +135,11 @@ class Coin extends Component {
     });
   }
 
-  updateFeedbaseAndCollateral() {
+  updateFeedAndCollateral() {
     this.getValueFromContract('feedbase').then((result) => {
       this.props.updateCoin(this.props.coin.coinId, 'feedbase', result);
-      feedbase.environments[this.props.network].feedbase['value'] = this.props.coin.feedbase;
-      feedbase.class(web3, this.props.network);
+      feedreader.environments[this.props.network].feedreader['value'] = this.props.coin.feedbase;
+      feedreader.class(web3, this.props.network);
       this.updateCoinCollateral();
     });
   }
@@ -239,7 +239,7 @@ class Coin extends Component {
 
   getFeedPrice(feedId) {
     const p = new Promise((resolve, reject) => {
-      feedbase.objects.feedbase.tryGet.call(feedId, (error, result) => {
+      feedreader.objects.feedreader.tryGet.call(feedId, (error, result) => {
         if (!error) {
           resolve(result);
         } else {
@@ -310,7 +310,7 @@ class Coin extends Component {
         </div>
         <div className="col-md-6">
           <p><strong>Owner: </strong><EthereumAddress address={this.props.coin.owner} /></p>
-          <p><strong>Price Supplier (Feedbase): </strong><EthereumAddress address={this.props.coin.feedbase} /></p>
+          <p><strong>Feed Price Supplier: </strong><EthereumAddress address={this.props.coin.feedbase} /></p>
           <p> &nbsp; </p>
         </div>
         <div className="col-md-6 text-center">
