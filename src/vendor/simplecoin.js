@@ -25,8 +25,8 @@ dapple['simple-stablecoin'] = (function builder () {
       },
       'ropsten': {
         'factory': {
-          'value': '0x21f8a783399b634e6944d72de30ae370c75c0d06',
-          'type': 'SimplecoinFactory[3459d8b33d886603c28311a12a2ace00b2b21cce5783ff515835e94e3efb903d]'
+          'value': '0x7c344251db355cb6b0597829a154de87384a6473',
+          'type': 'SimplecoinFactory[3749109b14cd1f30f12aecd1d1bb6d411d3660ba69ece85b26e0ae1b9e7265e0]'
         }
       }
     };
