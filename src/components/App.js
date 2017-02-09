@@ -117,6 +117,10 @@ class App extends Component {
     //
     simplecoinFactory.class(web3, this.state.network.network);
 
+    const networkState = {...this.state.network};
+    networkState['contract'] = simplecoinFactory.objects.factory.address;
+    this.setState({ network: networkState });
+
     simplecoinFactory.objects.factory.count((e, r) => {
       const promises = [];
       for (let i=0; i<r; i++) {

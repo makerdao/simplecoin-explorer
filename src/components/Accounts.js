@@ -27,7 +27,7 @@ const Accounts = (props) => {
               <label className="control-label">Contract </label>
             </div>
             <div className="col-sm-9">
-              <p className="form-control-static">0xa33f1ca6d2d2f230f8aec1e8f15a8a77e8e83256</p>
+              <p className="form-control-static">{props.contract}</p>
             </div>
           </div>
         </form>
