@@ -2,7 +2,6 @@
   "name": "simplecoin-explorer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://makerdao.github.io/simplecoin-explorer",
   "devDependencies": {
     "gh-pages": "^0.12.0",
     "react-scripts": "0.7.0"
