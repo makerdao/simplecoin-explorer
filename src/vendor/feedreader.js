@@ -17,7 +17,7 @@ dapple['feedreader'] = (function builder () {
           'type': 'Feedreader[]'
         }
       },
-      'ropsten': {
+      'kovan': {
         'feedreader': {
           'value': '',
           'type': 'Feedreader[]'

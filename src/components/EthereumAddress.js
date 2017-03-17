@@ -7,7 +7,7 @@ const EthereumAddress = (props) => {
   let shortAddress = '-';
   if(isAddress(props.address)) {
     address = props.address;
-    const myToken = addressToToken('ropsten', address);
+    const myToken = addressToToken('kovan', address);
     shortAddress = myToken !== address ? myToken : (props.short ? `${address.substring(0, 10)}...` : address);
   }
 

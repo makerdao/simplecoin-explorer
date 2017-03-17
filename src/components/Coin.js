@@ -40,7 +40,7 @@ class Coin extends Component {
     this.updateCoinValue('symbol');
     this.updateCoinValue('totalSupply');
     this.updateCoinBalance();
-    this.updateFeedAndCollateral('feedbase');
+    this.updateFeedAndCollateral('feeds');
 
     this.simplecoin.Transfer({ }, { fromBlock: 0 }).get((error, result) => {
       if(!error) {
@@ -136,9 +136,9 @@ class Coin extends Component {
   }
 
   updateFeedAndCollateral() {
-    this.getValueFromContract('feedbase').then((result) => {
-      this.props.updateCoin(this.props.coin.coinId, 'feedbase', result);
-      feedreader.environments[this.props.network].feedreader['value'] = this.props.coin.feedbase;
+    this.getValueFromContract('feeds').then((result) => {
+      this.props.updateCoin(this.props.coin.coinId, 'feeds', result);
+      feedreader.environments[this.props.network].feedreader['value'] = this.props.coin.feeds;
       feedreader.class(web3, this.props.network);
       this.updateCoinCollateral();
     });
@@ -197,7 +197,7 @@ class Coin extends Component {
 
         for(let i=0; i<feedIds.length; i++) {
           this.getFeedPrice(feedIds[i]).then((result) => {
-            this.props.updateFeedPrices(this.props.coin.feedbase, feedIds[i], web3.toBigNumber(result[0]));
+            this.props.updateFeedPrices(this.props.coin.feeds, feedIds[i], web3.toBigNumber(result[0]));
           });
         }
       });
@@ -253,10 +253,10 @@ class Coin extends Component {
   renderCollateralType(key, row) {
     let feedPrice = '';
     if(row['feed']
-        && typeof(this.props.feedPrices[this.props.coin.feedbase]) !== 'undefined'
-        && typeof(this.props.feedPrices[this.props.coin.feedbase][row['feed']]) !== 'undefined'
-        && this.props.feedPrices[this.props.coin.feedbase][row['feed']]) {
-      feedPrice = this.props.feedPrices[this.props.coin.feedbase][row['feed']];
+        && typeof(this.props.feedPrices[this.props.coin.feeds]) !== 'undefined'
+        && typeof(this.props.feedPrices[this.props.coin.feeds][row['feed']]) !== 'undefined'
+        && this.props.feedPrices[this.props.coin.feeds][row['feed']]) {
+      feedPrice = this.props.feedPrices[this.props.coin.feeds][row['feed']];
     }
     return(
       <tr key={key}>
@@ -310,7 +310,7 @@ class Coin extends Component {
         </div>
         <div className="col-md-6">
           <p><strong>Owner: </strong><EthereumAddress address={this.props.coin.owner} /></p>
-          <p><strong>Feed Price Supplier: </strong><EthereumAddress address={this.props.coin.feedbase} /></p>
+          <p><strong>Feed Price Supplier: </strong><EthereumAddress address={this.props.coin.feeds} /></p>
           <p> &nbsp; </p>
         </div>
         <div className="col-md-6 text-center">

@@ -14,7 +14,7 @@ dapple['simple-stablecoin'] = (function builder () {
       'develop': {},
       'morden': {},
       'live': {},
-      'ropsten': {
+      'kovan': {
         'factory': {
           'value': '0x7c344251db355cb6b0597829a154de87384a6473',
           'type': 'SimplecoinFactory[3749109b14cd1f30f12aecd1d1bb6d411d3660ba69ece85b26e0ae1b9e7265e0]'
@@ -51,11 +51,11 @@ dapple['simple-stablecoin'] = (function builder () {
       env = {
       'objects': {
         'factory': {
-          'value': '0x7c344251db355cb6b0597829a154de87384a6473',
-          'type': 'SimplecoinFactory[3749109b14cd1f30f12aecd1d1bb6d411d3660ba69ece85b26e0ae1b9e7265e0]'
+          'value': '0xd621b5328dd7bd9bba0def2240fbfddc1c8779bc',
+          'type': 'SimplecoinFactory[]'
         }
       },
-      'type': 'ropsten'
+      'type': 'kovan'
     };
     }
     if(typeof env === "object" && !("objects" in env)) {
@@ -1670,7 +1670,7 @@ dapple['simple-stablecoin'] = (function builder () {
           {
             'constant': true,
             'inputs': [],
-            'name': 'feedbase',
+            'name': 'feeds',
             'outputs': [
               {
                 'name': '',
@@ -1815,7 +1815,7 @@ dapple['simple-stablecoin'] = (function builder () {
           {
             'inputs': [
               {
-                'name': '_feedbase',
+                'name': '_feeds',
                 'type': 'address'
               },
               {
@@ -2013,7 +2013,7 @@ dapple['simple-stablecoin'] = (function builder () {
             'constant': false,
             'inputs': [
               {
-                'name': 'feedbase',
+                'name': 'feeds',
                 'type': 'address'
               },
               {
