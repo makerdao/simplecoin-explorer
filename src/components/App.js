@@ -115,6 +115,7 @@ class App extends Component {
     // Testing purpose
     window.simplecoinFactory = simplecoinFactory;
     //
+
     simplecoinFactory.class(web3, this.state.network.network);
 
     const networkState = {...this.state.network};
@@ -139,7 +140,6 @@ class App extends Component {
   componentDidMount() {
     this.checkNetwork();
     this.checkAccounts();
-    this.initContracts();
 
     this.checkAccountsInterval = setInterval(this.checkAccounts, 10000);
     this.checkNetworkInterval = setInterval(this.checkNetwork, 3000);
@@ -215,6 +215,8 @@ class App extends Component {
     networkState['isConnected'] = true;
     networkState['latestBlock'] = 0;
     this.setState({ network: networkState });
+
+    this.initContracts();
   }
 
   checkAccounts() {

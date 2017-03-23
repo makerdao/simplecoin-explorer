@@ -89,16 +89,30 @@ dapple['feedreader'] = (function builder () {
                 'type': 'bytes12'
               }
             ],
-            'name': 'tryGet',
+            'name': 'peek',
+            'outputs': [
+              {
+                'name': 'ok',
+                'type': 'bool'
+              }
+            ],
+            'payable': false,
+            'type': 'function'
+          },
+          {
+            'constant': false,
+            'inputs': [
+              {
+                'name': 'id',
+                'type': 'bytes12'
+              }
+            ],
+            'name': 'read',
             'outputs': [
               {
                 'name': 'value',
                 'type': 'bytes32'
               },
-              {
-                'name': 'ok',
-                'type': 'bool'
-              }
             ],
             'payable': false,
             'type': 'function'

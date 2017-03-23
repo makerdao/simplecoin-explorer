@@ -35,7 +35,7 @@ class Coin extends Component {
   }
 
   componentDidMount() {
-    this.updateCoinValue('owner');
+    //this.updateCoinValue('owner');
     this.updateCoinValue('name');
     this.updateCoinValue('symbol');
     this.updateCoinValue('totalSupply');
@@ -197,7 +197,7 @@ class Coin extends Component {
 
         for(let i=0; i<feedIds.length; i++) {
           this.getFeedPrice(feedIds[i]).then((result) => {
-            this.props.updateFeedPrices(this.props.coin.feeds, feedIds[i], web3.toBigNumber(result[0]));
+            this.props.updateFeedPrices(this.props.coin.feeds, feedIds[i], web3.toBigNumber(result));
           });
         }
       });
@@ -239,7 +239,7 @@ class Coin extends Component {
 
   getFeedPrice(feedId) {
     const p = new Promise((resolve, reject) => {
-      feedreader.objects.feedreader.tryGet.call(feedId, (error, result) => {
+      feedreader.objects.feedreader.read.call(feedId, (error, result) => {
         if (!error) {
           resolve(result);
         } else {
